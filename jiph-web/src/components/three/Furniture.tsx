@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import type { Kind } from "@/data/catalog";
+import Scholar90 from "./Scholar90";
 
 /**
  * Procedural stand-ins for JIPH products, built to catalogue dimensions.
@@ -280,7 +281,10 @@ export function AudiRow({ w, seats, accent = "#7A1E24" }: { w: number; seats: nu
 export function FurnitureModel({ kind, dims, seats = 2, finish, colour, slug }: { kind: Kind; dims: [number, number, number]; seats?: number; finish: Finish; colour?: string; slug?: string }): ReactNode {
   const [w, d, h] = dims.map((v) => v / 1000) as [number, number, number];
   switch (kind) {
-    case "desk-bench": return <DeskBench w={w} d={d} h={h} f={finish} />;
+    case "desk-bench":
+      return slug === "scholar-90"
+        ? <Scholar90 w={w} d={d} h={h} f={{ panel: finish.wood, frame: finish.metal }} />
+        : <DeskBench w={w} d={d} h={h} f={finish} />;
     case "lecture-row": return <LectureRow w={w} d={Math.min(d, 0.45)} h={h} seats={seats} f={finish} upholstered={slug === "scholar-105" || slug === "scholar-213"} />;
     case "teacher-table": return <TeacherTable w={w} d={d} h={h} f={finish} />;
     case "reading-table": return <ReadingTable w={w} d={d} h={h} f={finish} />;

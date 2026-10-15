@@ -26,7 +26,8 @@ export default function ClassroomBuild() {
   const [lowPower, setLowPower] = useState(false);
 
   useEffect(() => {
-    setLowPower(window.innerWidth < 760 || (navigator.hardwareConcurrency ?? 8) <= 4);
+    const q = new URLSearchParams(window.location.search).get("quality");
+    setLowPower(q === "lite" || (q !== "high" && (window.innerWidth < 760 || (navigator.hardwareConcurrency ?? 8) <= 4)));
   }, []);
 
   useEffect(() => {

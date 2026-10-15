@@ -47,6 +47,10 @@ export type Product = {
   /** Laminate and powder-coat options apply; false for e.g. colour-moulded kids furniture */
   finishes?: boolean;
   colours?: { name: string; code: string; hex: string }[];
+  /** Product-specific top/panel shades listed before the standard laminates (first one is the default). */
+  topColours?: { code: string; name: string; hex: string }[];
+  /** Default powder-coat shade name, e.g. "Silver Grey". */
+  defaultFrame?: string;
   govtProject?: string;
 };
 
@@ -179,13 +183,16 @@ export const products: Product[] = [
     slug: "scholar-90", name: "Scholar 90", code: "1102", range: "classroom-desks", kind: "desk-bench",
     tagline: "The trusted benchmark for classroom desks",
     description: "One of JIPH's most trusted classroom solutions: a robust steel structure, premium work surface and ergonomic seating, supplied to government education projects and leading private schools.",
-    features: ["Heavy-duty steel frame", "Wooden seat and backrest", "Side bag hook", "Under-desk book storage"],
+    features: ["Heavy-duty square-tube steel frame", "Perforated powder-coated front panel", "Seat 450 mm, backrest 800 mm high", "Under-desk book shelf", "Side bag hook", "Floor runners tie desk and bench into one rigid unit"],
+    // 3-seater width 1500 mm confirmed by the Scholar 90 product drawing.
     sizes: [
       { code: "1102", label: "1 Seater", seats: 1, dims: [600, 930, 750] },
       { code: "1103", label: "2 Seater", seats: 2, dims: [1066, 930, 750] },
       { code: "1104", label: "3 Seater", seats: 3, dims: [1500, 930, 760] },
       { code: "1105", label: "4 Seater", seats: 4, dims: [1800, 930, 760] },
     ],
+    topColours: [{ code: "BL", name: "Royal Blue (as shown)", hex: "#2350C9" }],
+    defaultFrame: "Silver Grey",
     tags: ["school", "government"], finishes: true,
   },
   {
