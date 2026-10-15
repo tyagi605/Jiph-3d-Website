@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JIPH — The Institution, Unveiled</title>
+<meta name="description" content="JIPH Furniture designs, manufactures and installs lecture-hall, classroom, hostel and office furniture for institutions across India.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0A0908;
+    --stone:#14120F;
+    --stone-2:#1C1915;
+    --bone:#EDE6DA;
+    --bone-2:#A79F92;
+    --gold:#C8A56A;
+    --hair:rgba(237,230,218,.14);
+    --accent:#D7000F;         /* reserved for the primary action only */
+    --wide:"Jost",-apple-system,"Segoe UI",sans-serif;
+    --serif:"Cormorant Garamond",Georgia,serif;
+    --pad:clamp(16px,3.4vw,48px);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{overflow-x:clip}
+  body{background:var(--night);color:var(--bone);font-family:var(--wide);font-weight:300;font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .cap{font-size:11px;font-weight:400;letter-spacing:.32em;text-transform:uppercase}
+  .it{font-family:var(--serif);font-style:italic;font-weight:300;text-transform:none;letter-spacing:0}
+  .display{font-weight:200;text-transform:uppercase;letter-spacing:.04em;line-height:.95;font-size:clamp(44px,8.4vw,128px)}
+  .display .it{font-size:1.06em;letter-spacing:-.01em;margin-right:.08em}
+
+  /* ---------- header ---------- */
+  .head{position:fixed;inset:0 0 auto 0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:20px var(--pad);background:linear-gradient(180deg,rgba(10,9,8,.85),rgba(10,9,8,0))}
+  .brand{display:flex;align-items:center;gap:18px}
+  .brand svg{width:16px;height:12px}
+  .brand strong{font-weight:400;letter-spacing:.42em;font-size:17px}
+  .brand small{font-size:12px;color:var(--bone-2);line-height:1.3;max-width:170px}
+  .head nav{display:flex;gap:30px}
+  .head nav a{display:inline-flex;align-items:center;min-height:44px;color:var(--bone-2);transition:color .3s}
+  .head nav a:hover{color:var(--bone)}
+  .head nav a.gold{color:var(--gold)}
+  @media (max-width:980px){.head nav,.brand small{display:none}}
+
+  /* ---------- 1. unveil ---------- */
+  .unveil{height:340vh;position:relative}
+  .u-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--night)}
+  .u-photo{position:absolute;inset:0}
+  .u-photo img{width:100%;height:100%;object-fit:cover;transform-origin:50% 70%;filter:brightness(.18) saturate(.6);will-change:transform,filter}
+  .u-vignette{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 65%,transparent 30%,rgba(10,9,8,.92) 85%)}
+  .u-beam{position:absolute;left:50%;top:-10%;width:60vw;height:120%;transform:translateX(-50%);background:conic-gradient(from 180deg at 50% 0%,transparent 160deg,rgba(237,230,218,.10) 175deg,rgba(237,230,218,.16) 180deg,rgba(237,230,218,.10) 185deg,transparent 200deg);mix-blend-mode:screen;pointer-events:none;will-change:opacity}
+  /* the dust sheet */
+  .u-sheet{position:absolute;left:-5%;right:-5%;bottom:-6%;height:62%;transform-origin:50% 0%;will-change:transform,opacity;pointer-events:none;
+    background:
+      radial-gradient(60% 40% at 30% 30%,rgba(255,255,255,.10),transparent 60%),
+      radial-gradient(50% 50% at 70% 50%,rgba(0,0,0,.25),transparent 70%),
+      repeating-linear-gradient(100deg,rgba(0,0,0,.0) 0 38px,rgba(0,0,0,.22) 52px,rgba(255,255,255,.05) 70px,rgba(0,0,0,0) 90px),
+      linear-gradient(180deg,#BBA88E 0%,#8E7C64 55%,#5B4D3D 100%);
+    border-radius:48% 52% 6% 6% / 30% 34% 4% 4%;
+    box-shadow:0 -30px 80px rgba(0,0,0,.6) inset,0 40px 80px rgba(0,0,0,.6)}
+  .u-copy{position:absolute;left:var(--pad);top:22vh;will-change:transform,opacity}
+  .u-copy p{margin-top:28px;max-width:360px;color:var(--bone-2)}
+  .u-hint{position:absolute;right:calc(var(--pad) + 4vw);top:38vh;display:flex;align-items:center;gap:14px;color:var(--bone-2)}
+  .u-hint svg{width:120px;height:120px}
+  .u-foot{position:absolute;left:var(--pad);right:var(--pad);bottom:28px;display:flex;justify-content:space-between;color:var(--bone-2)}
+  .u-reveal{position:absolute;left:var(--pad);bottom:80px;opacity:0;will-change:opacity,transform}
+  .u-reveal .display{font-size:clamp(36px,5.6vw,84px)}
+  .u-reveal .cap{color:var(--gold);display:block;margin-bottom:14px}
+  @media (max-width:760px){.u-hint{display:none}.u-copy{top:16vh}}
+
+  /* ---------- 2. detail tour ---------- */
+  .tour{height:420vh;position:relative}
+  .t-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--night)}
+  .t-photo{position:absolute;inset:0;will-change:transform}
+  .t-photo img{width:100%;height:100%;object-fit:cover;filter:brightness(.82) contrast(1.05) saturate(.9)}
+  .t-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,9,8,.85) 0%,rgba(10,9,8,.3) 45%,rgba(10,9,8,0) 70%),linear-gradient(0deg,rgba(10,9,8,.6),transparent 40%)}
+  .t-cards{position:absolute;left:var(--pad);bottom:clamp(40px,10vh,110px);width:min(440px,calc(100% - 2*var(--pad)))}
+  .t-card{position:absolute;left:0;bottom:0;width:100%;opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+  .t-card.on{opacity:1;transform:none}
+  .t-card .cap{color:var(--gold)}
+  .t-card h3{font-weight:200;text-transform:uppercase;letter-spacing:.05em;font-size:clamp(30px,3.6vw,52px);line-height:1;margin:16px 0 14px}
+  .t-card p{color:var(--bone-2)}
+  .t-count{position:absolute;right:var(--pad);bottom:clamp(40px,10vh,110px);display:flex;align-items:center;gap:14px;color:var(--bone-2)}
+  .t-count b{font-weight:200;font-size:44px;color:var(--bone);letter-spacing:.04em}
+  .t-ticks{position:absolute;left:var(--pad);right:var(--pad);top:96px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .t-ticks i{display:block;height:1px;background:var(--hair);position:relative;overflow:hidden}
+  .t-ticks i span{position:absolute;inset:0;background:var(--gold);transform-origin:left;transform:scaleX(0)}
+
+  /* ---------- 3. specification gauge ---------- */
+  .spec{height:300vh;position:relative}
+  .s-stage{position:sticky;top:0;height:100vh;height:100svh;display:grid;grid-template-columns:1fr 1.2fr;align-items:center;gap:4vw;padding:0 var(--pad);background:radial-gradient(70% 70% at 70% 55%,var(--stone-2),var(--night) 70%)}
+  .s-copy .cap{color:var(--gold)}
+  .s-copy .display{font-size:clamp(38px,5.4vw,80px);margin-top:20px}
+  .s-copy p{color:var(--bone-2);max-width:380px;margin-top:24px}
+  .gauge{position:relative;width:100%;max-width:640px;justify-self:center}
+  .gauge svg{width:100%;height:auto;overflow:visible}
+  .g-read{position:absolute;left:0;right:0;top:52%;text-align:center}
+  .g-read b{display:block;font-weight:200;font-size:clamp(40px,6vw,88px);letter-spacing:.02em;line-height:1}
+  .g-read .cap{color:var(--bone-2);display:block;margin-top:12px}
+  .g-legend{display:grid;grid-template-columns:repeat(4,1fr);margin-top:28px;border-top:1px solid var(--hair)}
+  .g-legend div{padding:14px 8px 0 0;color:var(--bone-2);transition:color .4s}
+  .g-legend div.on{color:var(--bone)}
+  .g-legend div b{display:block;font-weight:300;font-size:18px}
+  @media (max-width:860px){.s-stage{grid-template-columns:1fr;align-content:center;gap:24px}.s-copy p{display:none}.g-legend{grid-template-columns:1fr 1fr}}
+
+  /* ---------- 4. atelier (ranges) ---------- */
+  section{padding:clamp(96px,13vw,180px) var(--pad)}
+  .wrap{max-width:1280px;margin:0 auto}
+  .sec-top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:64px}
+  .sec-top .cap{color:var(--gold)}
+  .sec-top .display{font-size:clamp(38px,5.4vw,80px);margin-top:18px}
+  .sec-top p{color:var(--bone-2);max-width:340px}
+  .ranges{list-style:none;border-top:1px solid var(--hair)}
+  .ranges li a{display:grid;grid-template-columns:72px 1fr 1.1fr 44px;align-items:center;gap:24px;padding:26px 0;border-bottom:1px solid var(--hair);transition:padding .5s}
+  .ranges li a:hover{padding-left:12px}
+  .ranges .n{color:var(--bone-2)}
+  .ranges h3{font-weight:200;text-transform:uppercase;letter-spacing:.06em;font-size:clamp(26px,3.4vw,48px);line-height:1}
+  .ranges .img{aspect-ratio:16/7;overflow:hidden;border-radius:2px}
+  .ranges .img img{width:100%;height:100%;object-fit:cover;filter:saturate(.75) brightness(.85);transition:transform 1s cubic-bezier(.2,.7,.2,1),filter .6s}
+  .ranges li a:hover .img img{transform:scale(1.05);filter:none}
+  .ranges .arr{width:44px;height:44px;border:1px solid var(--hair);border-radius:50%;display:grid;place-items:center;color:var(--gold)}
+  @media (max-width:760px){.ranges li a{grid-template-columns:36px 1fr 44px}.ranges .img{grid-column:1/-1;order:5}}
+
+  /* ---------- 5. provenance ---------- */
+  .prov{padding-left:0;padding-right:0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);padding-top:56px;padding-bottom:56px;overflow:hidden}
+  .prov .cap{display:block;text-align:center;color:var(--bone-2);margin-bottom:36px}
+  .marq{display:flex;width:max-content;animation:marq 48s linear infinite}
+  .marq span{font-weight:200;text-transform:uppercase;letter-spacing:.1em;font-size:clamp(26px,3.2vw,46px);white-space:nowrap;padding:0 32px;display:flex;align-items:center;gap:64px}
+  .marq span::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold)}
+  @keyframes marq{to{transform:translateX(-50%)}}
+
+  /* ---------- 6. private viewing ---------- */
+  .view{display:grid;grid-template-columns:1.1fr 1fr;gap:6vw;align-items:center}
+  .view .img{aspect-ratio:4/5;overflow:hidden;border-radius:2px}
+  .view .img img{width:100%;height:100%;object-fit:cover;filter:brightness(.8) saturate(.8)}
+  .view .cap{color:var(--gold)}
+  .view .display{font-size:clamp(38px,5.4vw,80px);margin:18px 0 24px}
+  .view p{color:var(--bone-2);max-width:420px}
+  .view ul{list-style:none;margin:32px 0;border-top:1px solid var(--hair);max-width:440px}
+  .view li{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--hair);font-size:15px}
+  .view li span:first-child{color:var(--bone-2)}
+  .btns{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 28px;font-size:12px;font-weight:400;letter-spacing:.24em;text-transform:uppercase;border-radius:999px;transition:background .3s,color .3s,border-color .3s}
+  .btn-red{background:var(--accent);color:#fff}
+  .btn-red:hover{background:#B8000D}
+  .btn-line{border:1px solid var(--hair);color:var(--bone)}
+  .btn-line:hover{border-color:var(--gold);color:var(--gold)}
+  @media (max-width:860px){.view{grid-template-columns:1fr}.view .img{aspect-ratio:4/3}}
+
+  .quote{text-align:center;max-width:980px;margin:0 auto}
+  .quote blockquote{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(28px,3.8vw,54px);line-height:1.15}
+  .quote footer{margin-top:28px;color:var(--bone-2)}
+
+  /* ---------- footer ---------- */
+  footer.site{padding:72px var(--pad) 32px;border-top:1px solid var(--hair);color:var(--bone-2);font-size:14px}
+  .fgrid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px}
+  .fgrid h4{color:var(--bone);font-weight:400;letter-spacing:.24em;text-transform:uppercase;font-size:11px;margin-bottom:12px}
+  .fgrid ul{list-style:none}
+  .fgrid li a{display:inline-flex;align-items:center;min-height:34px}
+  .fgrid a:hover{color:var(--gold)}
+  .fword{max-width:1280px;margin:72px auto 0;font-weight:200;letter-spacing:.5em;font-size:clamp(48px,14vw,200px);line-height:1;color:var(--stone-2);text-align:center;padding-left:.5em;user-select:none}
+  .fbase{max-width:1280px;margin:24px auto 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  @media (max-width:760px){.fgrid{grid-template-columns:1fr 1fr}.fgrid>div:first-child{grid-column:1/-1}}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity 1.1s cubic-bezier(.2,.7,.2,1),transform 1.1s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  .mbar{display:none}
+  @media (max-width:760px){
+    body{padding-bottom:76px}
+    .mbar{display:flex;gap:10px;position:fixed;inset:auto 0 0 0;z-index:50;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(10,9,8,.9);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--hair)}
+    .mbar .btn{flex:1;padding:0 12px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .unveil,.tour,.spec{height:auto}
+    .u-stage,.t-stage,.s-stage{position:relative}
+    .marq{animation:none;flex-wrap:wrap;width:auto;justify-content:center}
+    .reveal{opacity:1;transform:none;transition:none}
+    .t-card{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="head">
+  <a class="brand" href="#" aria-label="JIPH home">
+    <svg viewBox="0 0 16 12" aria-hidden="true"><path d="M1 1l7 10 7-10" fill="none" stroke="#C8A56A" stroke-width="1.2"/></svg>
+    <strong>JIPH</strong>
+    <small>Institutional furniture, made in Haryana</small>
+  </a>
+  <nav class="cap" aria-label="Primary">
+    <a href="#tour">Design</a>
+    <a href="#spec">Scale</a>
+    <a href="#atelier">Atelier</a>
+    <a class="gold" href="#visit">Site visit</a>
+  </nav>
+</header>
+
+<main>
+  <!-- ===== 1. Unveil ===== -->
+  <div class="unveil" id="unveil">
+    <div class="u-stage">
+      <div class="u-photo"><img id="uImg" src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a1d4f51296958.60129563.png" alt="Tiered lecture hall furnished by JIPH with walnut-finish desks and upholstered seats" fetchpriority="high"></div>
+      <div class="u-vignette" id="uVig"></div>
+      <div class="u-beam" id="uBeam" aria-hidden="true"></div>
+      <div class="u-sheet" id="uSheet" aria-hidden="true"></div>
+
+      <div class="u-copy" id="uCopy">
+        <h1 class="display">Rediscover<br><span class="it">the</span>Classroom</h1>
+        <p>Lecture halls, libraries and hostels — designed, made and installed by one hand.</p>
+      </div>
+
+      <div class="u-hint cap" id="uHint" aria-hidden="true">
+        <svg viewBox="0 0 120 120"><path d="M10 110 A100 100 0 0 1 110 10" fill="none" stroke="rgba(237,230,218,.35)" stroke-width="1"/><circle cx="110" cy="10" r="3" fill="#C8A56A"/></svg>
+        Scroll to reveal
+      </div>
+
+      <div class="u-reveal" id="uReveal">
+        <span class="cap">Series 01 — Lecture hall</span>
+        <p class="display">Built <span class="it">for</span><br>a thousand mornings</p>
+      </div>
+
+      <div class="u-foot cap"><span>Gharaunda · NH-1</span><span id="uPct">00</span></div>
+    </div>
+  </div>
+
+  <!-- ===== 2. Detail tour ===== -->
+  <div class="tour" id="tour">
+    <div class="t-stage">
+      <div class="t-photo" id="tPhoto"><img src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a1d4f51296958.60129563.png" alt="Detail views of a JIPH lecture hall installation"></div>
+      <div class="t-shade"></div>
+      <div class="t-ticks" aria-hidden="true"><i><span></span></i><i><span></span></i><i><span></span></i><i><span></span></i></div>
+
+      <div class="t-cards">
+        <article class="t-card on"><span class="cap">Detail 01</span><h3>Fold-away<br>writing tablet</h3><p>The desk front folds flat so every row clears for movement between lectures.</p></article>
+        <article class="t-card"><span class="cap">Detail 02</span><h3>Upholstered<br>seat &amp; back</h3><p>Cushioned shells for three-hour sessions, finished to survive a decade of batches.</p></article>
+        <article class="t-card"><span class="cap">Detail 03</span><h3>Sculpted<br>armrest end</h3><p>A rounded end panel that closes each row and guides the aisle.</p></article>
+        <article class="t-card"><span class="cap">Detail 04</span><h3>Planned for<br>the tiers</h3><p>Rows set out to your hall’s steps and sight-lines before anything is cut.</p></article>
+      </div>
+      <div class="t-count cap"><b id="tNum">01</b>/ 04</div>
+    </div>
+  </div>
+
+  <!-- ===== 3. Specification gauge ===== -->
+  <div class="spec" id="spec">
+    <div class="s-stage">
+      <div class="s-copy">
+        <span class="cap">Specification</span>
+        <p class="display">The<br><span class="it">numbers</span><br>behind it</p>
+        <p>One factory floor on NH-1. Crews across India. Every figure below came off that floor.</p>
+      </div>
+      <div>
+        <div class="gauge">
+          <svg viewBox="0 0 400 230" aria-hidden="true">
+            <path d="M30 210 A170 170 0 0 1 370 210" fill="none" stroke="rgba(237,230,218,.12)" stroke-width="1.5"/>
+            <path id="gArc" d="M30 210 A170 170 0 0 1 370 210" fill="none" stroke="#C8A56A" stroke-width="1.5" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+            <g id="gTicks"></g>
+            <g id="gNeedle" style="transform-origin:200px 210px;transform:rotate(-90deg)">
+              <line x1="200" y1="210" x2="200" y2="58" stroke="#EDE6DA" stroke-width="1.2"/>
+              <circle cx="200" cy="210" r="6" fill="#0A0908" stroke="#C8A56A" stroke-width="1.2"/>
+            </g>
+          </svg>
+          <div class="g-read" aria-live="polite"><b id="gVal">0</b><span class="cap" id="gLbl">Desks delivered</span></div>
+        </div>
+        <div class="g-legend cap" id="gLegend">
+          <div class="on"><b>5,00,000+</b>Desks</div>
+          <div><b>1,00,000+</b>Workstations</div>
+          <div><b>15,000+</b>Clients</div>
+          <div><b>1.5 lakh</b>Sq ft facility</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 4. Atelier ===== -->
+  <section id="atelier" aria-labelledby="atelier-h">
+    <div class="wrap">
+      <div class="sec-top">
+        <div><span class="cap reveal">The atelier</span><h2 class="display reveal" id="atelier-h">Four <span class="it">ranges</span></h2></div>
+        <p class="reveal">Each available as standard models or built to your floor plan.</p>
+      </div>
+      <ol class="ranges reveal">
+        <li><a href="https://www.jiph.in/education"><span class="n cap">01</span><h3>Education</h3><span class="img"><img loading="lazy" src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a4367390869e5.71750837.png" alt="Lecture hall furniture"></span><span class="arr" aria-hidden="true">→</span></a></li>
+        <li><a href="https://www.jiph.in/tables"><span class="n cap">02</span><h3>Tables</h3><span class="img"><img loading="lazy" src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a436606b74f39.71821191.png" alt="Office and conference tables"></span><span class="arr" aria-hidden="true">→</span></a></li>
+        <li><a href="https://www.jiph.in/seating"><span class="n cap">03</span><h3>Seating</h3><span class="img"><img loading="lazy" src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a436615e91d36.93375356.png" alt="Office and education seating"></span><span class="arr" aria-hidden="true">→</span></a></li>
+        <li><a href="https://www.jiph.in/storage"><span class="n cap">04</span><h3>Storage</h3><span class="img"><img loading="lazy" src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a4366d6d69ad5.94722903.png" alt="Storage units and lockers"></span><span class="arr" aria-hidden="true">→</span></a></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== 5. Provenance ===== -->
+  <section class="prov" aria-label="Clients">
+    <span class="cap">Provenance — campuses furnished</span>
+    <div class="marq" aria-hidden="true">
+      <span>Lovely Professional University</span><span>Chitkara University</span><span>DPS Group</span><span>Rishihood University</span><span>K.R. Mangalam University</span><span>Beford School</span>
+      <span>Lovely Professional University</span><span>Chitkara University</span><span>DPS Group</span><span>Rishihood University</span><span>K.R. Mangalam University</span><span>Beford School</span>
+    </div>
+    <p class="sr" style="position:absolute;left:-9999px">Clients include Lovely Professional University, Chitkara University, DPS Group, Rishihood University, K.R. Mangalam University and Beford School.</p>
+  </section>
+
+  <!-- ===== Quote ===== -->
+  <section aria-label="Client testimonial">
+    <figure class="quote reveal">
+      <blockquote>“Lab furniture quality is very strong and perfectly designed for practical use.”</blockquote>
+      <footer class="cap">Pooja Gupta — Institution Manager</footer>
+    </figure>
+  </section>
+
+  <!-- ===== 6. Site visit ===== -->
+  <section id="visit" aria-labelledby="visit-h" style="padding-top:0">
+    <div class="wrap view">
+      <div class="img reveal"><img loading="lazy" src="https://www.jiph.in/assets/images/01_4.jpg" alt="Students working at a JIPH classroom desk"></div>
+      <div>
+        <span class="cap reveal">Private viewing</span>
+        <h2 class="display reveal" id="visit-h">See it <span class="it">before</span><br>you sign</h2>
+        <p class="reveal">Visit the factory floor, sit in the samples, and leave with a layout drawn to your campus.</p>
+        <ul class="reveal">
+          <li><span>Where</span><span>Gharaunda, Haryana · NH-1</span></li>
+          <li><span>For</span><span>Projects ₹1 Cr and above</span></li>
+          <li><span>You leave with</span><span>Layout, samples, quote</span></li>
+        </ul>
+        <div class="btns reveal">
+          <a class="btn btn-red" href="mailto:enquiry@jiphfurniture.com?subject=Site%20visit">Book a site visit</a>
+          <a class="btn btn-line" href="https://wa.me/917404650000">WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="fgrid">
+    <div>
+      <h4>JIPH Furniture Pvt. Ltd.</h4>
+      <p>Grand Trunk Road, NH-1, near Liberty Shoe Factory,<br>Gharaunda, Haryana 132114</p>
+      <p style="margin-top:12px"><a href="tel:+917404650000">+91 74046 50000</a> · <a href="mailto:enquiry@jiphfurniture.com">enquiry@jiphfurniture.com</a></p>
+    </div>
+    <div><h4>Ranges</h4><ul><li><a href="https://www.jiph.in/education">Education</a></li><li><a href="https://www.jiph.in/tables">Tables</a></li><li><a href="https://www.jiph.in/seating">Seating</a></li><li><a href="https://www.jiph.in/storage">Storage</a></li></ul></div>
+    <div><h4>House</h4><ul><li><a href="#tour">Design</a></li><li><a href="#spec">Scale</a></li><li><a href="#">Journal</a></li><li><a href="#visit">Site visit</a></li></ul></div>
+    <div><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Data deletion</a></li></ul></div>
+  </div>
+  <div class="fword" aria-hidden="true">JIPH</div>
+  <div class="fbase cap"><span>© 2026 JIPH Furniture Pvt. Ltd.</span><span>Built for institutions</span></div>
+</footer>
+
+<div class="mbar">
+  <a class="btn btn-line" href="tel:+917404650000">Call</a>
+  <a class="btn btn-red" href="#visit">Site visit</a>
+</div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = id => document.getElementById(id);
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const range = (p, a, b) => clamp((p - a) / (b - a));
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const prog = el => { const r = el.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight)); };
+
+  /* gauge ticks */
+  const ticks = $('gTicks');
+  for (let i = 0; i <= 40; i++) {
+    const a = Math.PI + (i / 40) * Math.PI, big = i % 10 === 0;
+    const r1 = big ? 150 : 158, r2 = 166;
+    const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    l.setAttribute('x1', 200 + r1 * Math.cos(a)); l.setAttribute('y1', 210 + r1 * Math.sin(a));
+    l.setAttribute('x2', 200 + r2 * Math.cos(a)); l.setAttribute('y2', 210 + r2 * Math.sin(a));
+    l.setAttribute('stroke', big ? '#C8A56A' : 'rgba(237,230,218,.3)'); l.setAttribute('stroke-width', big ? 1.4 : 1);
+    ticks.appendChild(l);
+  }
+  const stats = [
+    { v: 500000, t: v => v.toLocaleString('en-IN') + '+', l: 'Desks delivered' },
+    { v: 100000, t: v => v.toLocaleString('en-IN') + '+', l: 'Workstations installed' },
+    { v: 15000,  t: v => v.toLocaleString('en-IN') + '+', l: 'Institutional clients' },
+    { v: 150000, t: v => (v / 100000).toFixed(1) + ' lakh', l: 'Sq ft facility' },
+  ];
+  const legend = [...$('gLegend').children];
+
+  /* tour crops: [scale, x%, y%] — pans the camera across the photo */
+  const crops = [[2.1, 22, -18], [2.0, -2, -6], [2.2, -24, -10], [1.15, 0, 0]];
+  const cards = [...document.querySelectorAll('.t-card')];
+  const tickBars = [...document.querySelectorAll('.t-ticks span')];
+  let lastCard = 0;
+
+  function frame() {
+    /* 1 · unveil */
+    const p = prog($('unveil'));
+    const lift = ease(range(p, .08, .6));
+    $('uSheet').style.transform = `translateY(${-lift * 120}%) rotate(${-lift * 6}deg) skewX(${-lift * 8}deg) scaleX(${1 - lift * .12})`;
+    $('uSheet').style.opacity = 1 - range(p, .45, .62);
+    const light = ease(range(p, .2, .75));
+    $('uImg').style.filter = `brightness(${.18 + light * .74}) saturate(${.6 + light * .4})`;
+    $('uImg').style.transform = `scale(${1.12 - light * .1})`;
+    $('uVig').style.opacity = 1 - light * .7;
+    $('uBeam').style.opacity = 1 - range(p, .5, .8);
+    $('uCopy').style.opacity = 1 - range(p, .05, .3);
+    $('uCopy').style.transform = `translateY(${-range(p, 0, .3) * 60}px)`;
+    $('uHint').style.opacity = 1 - range(p, 0, .12);
+    const r = ease(range(p, .7, .92));
+    $('uReveal').style.opacity = r;
+    $('uReveal').style.transform = `translateY(${(1 - r) * 30}px)`;
+    $('uPct').textContent = String(Math.round(p * 100)).padStart(2, '0');
+
+    /* 2 · tour */
+    const q = prog($('tour'));
+    const seg = q * 4, i = Math.min(3, Math.floor(seg)), f = ease(clamp((seg - i) / .35));
+    const a = crops[Math.max(0, i - 1)], b = crops[i], from = i === 0 ? [1.15, 0, 0] : a;
+    const s = from[0] + (b[0] - from[0]) * f, x = from[1] + (b[1] - from[1]) * f, y = from[2] + (b[2] - from[2]) * f;
+    $('tPhoto').style.transform = `scale(${s}) translate(${x}%, ${y}%)`;
+    if (i !== lastCard) { cards.forEach((c, k) => c.classList.toggle('on', k === i)); $('tNum').textContent = '0' + (i + 1); lastCard = i; }
+    tickBars.forEach((t, k) => t.style.transform = `scaleX(${clamp(seg - k)})`);
+
+    /* 3 · gauge */
+    const g = ease(range(prog($('spec')), .05, .9));
+    $('gNeedle').style.transform = `rotate(${-90 + g * 180}deg)`;
+    $('gArc').style.strokeDashoffset = 100 - g * 100;
+    const k = Math.min(3, Math.floor(g * 4));
+    const local = clamp(g * 4 - k);
+    const st = stats[k];
+    $('gVal').textContent = st.t(Math.round(st.v * ease(local)));
+    $('gLbl').textContent = st.l;
+    legend.forEach((d, n) => d.classList.toggle('on', n <= k));
+  }
+
+  if (reduce) {
+    $('uSheet').style.display = 'none'; $('uImg').style.filter = 'brightness(.85)'; $('uReveal').style.opacity = 1;
+    $('gNeedle').style.transform = 'rotate(90deg)'; $('gArc').style.strokeDashoffset = 0; $('gVal').textContent = '5,00,000+';
+    legend.forEach(d => d.classList.add('on'));
+  } else {
+    let tick = false;
+    const on = () => { if (!tick) { tick = true; requestAnimationFrame(() => { frame(); tick = false; }); } };
+    addEventListener('scroll', on, { passive: true });
+    addEventListener('resize', on);
+    frame();
+  }
+
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+})();
+</script>
+</body>
+</html>

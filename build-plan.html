@@ -1,0 +1,389 @@
+<title>JIPH Website Build Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: a technical spec — sticky chapter index on the left, one readable column on the right, tables for anything with columns. */
+:root{
+  --bg:#F7F6F4; --surface:#FFFFFF; --fg:#1B1A19; --fg-2:#5E5A55; --line:#E2DED8;
+  --accent:#C8101E; --accent-soft:#FBE9EA; --ok:#1F7A4D; --warn:#A35A00; --warn-soft:#FFF3E0;
+  --display:"Schibsted Grotesk",-apple-system,"Segoe UI",sans-serif;
+  --body:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141312; --surface:#1C1B1A; --fg:#EDEAE6; --fg-2:#A8A29B; --line:#2E2C2A;
+  --accent:#FF4D57; --accent-soft:#3A1A1C; --ok:#5BC48F; --warn:#F0A54A; --warn-soft:#33260F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141312; --surface:#1C1B1A; --fg:#EDEAE6; --fg-2:#A8A29B; --line:#2E2C2A;
+  --accent:#FF4D57; --accent-soft:#3A1A1C; --ok:#5BC48F; --warn:#F0A54A; --warn-soft:#33260F; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6;padding-inline:16px;-webkit-font-smoothing:antialiased}
+.shell{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:220px minmax(0,1fr);gap:56px;padding-block:56px 96px}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;font-size:14px}
+nav.toc p{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-2);margin:0 0 10px}
+nav.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;counter-reset:c}
+nav.toc a{display:flex;gap:10px;padding:6px 8px;border-radius:6px;color:var(--fg-2);text-decoration:none}
+nav.toc a::before{counter-increment:c;content:counter(c,decimal-leading-zero);font-family:var(--mono);font-size:12px;color:var(--fg-2);opacity:.7;padding-top:1px}
+nav.toc a:hover,nav.toc a:focus-visible{background:var(--surface);color:var(--fg);outline:none}
+main{min-width:0;max-width:760px}
+header.top .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,5vw,52px);line-height:1.05;letter-spacing:-.02em;margin:10px 0 16px;text-wrap:balance}
+h2{font-family:var(--display);font-weight:700;font-size:28px;line-height:1.15;letter-spacing:-.01em;margin:0 0 14px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:700;font-size:19px;margin:28px 0 8px}
+p{margin:0 0 14px}
+.lede{font-size:19px;color:var(--fg-2);max-width:640px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--mono);font-size:12px;color:var(--fg-2);margin-top:18px}
+section{padding-top:64px;margin-top:64px;border-top:1px solid var(--line);scroll-margin-top:24px}
+section .num{font-family:var(--mono);font-size:12px;color:var(--fg-2);display:block;margin-bottom:6px}
+ul.clean{padding-left:20px;margin:0 0 14px}
+ul.clean li{margin-bottom:6px}
+code,.code{font-family:var(--mono);font-size:.88em;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+.tbl{overflow-x:auto;margin:14px 0 20px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:560px}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2);background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td.k{font-weight:600;white-space:nowrap}
+.callout{border-left:3px solid var(--accent);background:var(--accent-soft);padding:14px 18px;border-radius:0 8px 8px 0;margin:18px 0}
+.callout.warn{border-color:var(--warn);background:var(--warn-soft)}
+.callout b{display:block;margin-bottom:4px}
+.scenes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0 20px}
+.scene{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.scene .t{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
+.scene h4{font-family:var(--display);font-size:17px;margin:4px 0 6px}
+.scene p{font-size:14px;color:var(--fg-2);margin:0}
+.scene .sku{font-family:var(--mono);font-size:12px;color:var(--fg);margin-top:8px}
+.gantt{overflow-x:auto;margin:16px 0}
+.g{min-width:620px;display:grid;grid-template-columns:170px repeat(14,1fr);gap:4px 0;font-size:13px;align-items:center}
+.g .h{font-family:var(--mono);font-size:11px;color:var(--fg-2);text-align:center}
+.g .lbl{padding-right:12px}
+.bar{height:18px;border-radius:4px;background:var(--fg);opacity:.85}
+.bar.a{background:var(--accent);opacity:1}
+pre.mermaid{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;overflow-x:auto}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.box h4{font-family:var(--display);margin:0 0 6px;font-size:16px}
+.box ul{margin:0;padding-left:18px;font-size:14.5px}
+.ok{color:var(--ok);font-weight:600}
+a{color:var(--accent)}
+@media (max-width:900px){.shell{grid-template-columns:1fr;gap:24px;padding-block:32px 72px}nav.toc{position:static}nav.toc ol{grid-template-columns:1fr 1fr}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+
+<div class="shell">
+<nav class="toc" aria-label="Contents">
+  <p>Contents</p>
+  <ol>
+    <li><a href="#goals">Goals &amp; audience</a></li>
+    <li><a href="#concept">The 3D concept</a></li>
+    <li><a href="#sitemap">Sitemap &amp; pages</a></li>
+    <li><a href="#frontend">Frontend</a></li>
+    <li><a href="#assets">3D asset pipeline</a></li>
+    <li><a href="#backend">Backend</a></li>
+    <li><a href="#data">Data model</a></li>
+    <li><a href="#api">API &amp; integrations</a></li>
+    <li><a href="#seo">SEO &amp; migration</a></li>
+    <li><a href="#perf">Performance &amp; QA</a></li>
+    <li><a href="#catalogue">Catalogue clean-up</a></li>
+    <li><a href="#timeline">Timeline &amp; team</a></li>
+    <li><a href="#needs">What we need from JIPH</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="top">
+  <span class="eyebrow">Technical plan · jiph.in rebuild</span>
+  <h1>A campus that builds itself as you scroll</h1>
+  <p class="lede">Plan for a new JIPH Furniture website: an interactive 3D campus where visitors watch classrooms, lecture halls, libraries and hostels assemble from the JIPH catalogue, backed by a product database and an enquiry system that hands every lead to the sales team.</p>
+  <div class="meta"><span>Source: JIPH catalogue (136 pages)</span><span>References: 2 Instagram reels, Scrolltide Firnlight &amp; Valmora</span><span>Prepared 13 Oct 2026</span></div>
+</header>
+
+<section id="goals">
+  <span class="num">01</span>
+  <h2>Goals and audience</h2>
+  <p>JIPH sells to institutions, not to individual shoppers. A sale starts with an enquiry, moves through drawings, samples and a site visit, and ends with a purchase order, often above ₹1 Cr. The website’s job is to create qualified enquiries and make the sales team’s first call easier.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Who visits</th><th>What they need</th><th>What the site gives them</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Principal / Director</td><td>Confidence the vendor is big and reliable</td><td>3D campus story, client list, factory and certifications</td></tr>
+      <tr><td class="k">Admin / Purchase officer</td><td>Model codes, sizes, finishes, quantities</td><td>Product pages with specs, search by code (e.g. <code>1102</code>), quote basket</td></tr>
+      <tr><td class="k">Architect / Interior consultant</td><td>Dimensions, layouts, CAD blocks</td><td>Downloadable spec sheets and drawings per product</td></tr>
+      <tr><td class="k">Government / tender buyer</td><td>Compliance and past govt projects</td><td>Govt-project badges (UP, Delhi, A.P. school projects), ISO and ZED certificates</td></tr>
+    </tbody>
+  </table></div>
+  <h3>How we measure success</h3>
+  <ul class="clean">
+    <li>Qualified enquiries per month (institution name, size and timeline filled in)</li>
+    <li>Quote baskets submitted, site visits booked, catalogue downloads</li>
+    <li>Mobile Largest Contentful Paint under 2.5 s, even with the 3D experience on the page</li>
+    <li>Ranking for model and category searches such as “lecture hall seating manufacturer” and “hostel bunk bed supplier”</li>
+  </ul>
+</section>
+
+<section id="concept">
+  <span class="num">02</span>
+  <h2>The 3D concept: “Build your campus”</h2>
+  <p>Both reels show the same idea: an empty room that fills itself as you scroll, and an isometric 3D map with info cards. For JIPH this maps naturally onto the catalogue, because every catalogue chapter is a room on a campus.</p>
+  <div class="callout"><b>Homepage story</b>The home page opens on an empty classroom shell. As the visitor scrolls, the floor appears, rows of Scholar desks drop into place, the Mentor teacher table slides in, and the room is finished. The camera then pulls back to an isometric campus. Each building is a product range; tapping one opens that range.</div>
+  <div class="scenes">
+    <div class="scene"><span class="t">Scene 1 · scroll</span><h4>Classroom</h4><p>Desks drop in row by row; a counter shows seats filled.</p><div class="sku">Scholar 90 · 1102 · Mentor-1 · 1301</div></div>
+    <div class="scene"><span class="t">Scene 2 · scroll</span><h4>Lecture theatre</h4><p>Tiered rows rise up; the tip-up seats fold down.</p><div class="sku">Scholar 31 · 1001 · Scholar 229 · 1014</div></div>
+    <div class="scene"><span class="t">Scene 3 · scroll</span><h4>Library</h4><p>Racks slide in, the reading table’s task light switches on.</p><div class="sku">Wisdom-14 · 4107 · Wisdom-19 · 2602</div></div>
+    <div class="scene"><span class="t">Scene 4 · scroll</span><h4>Hostel room</h4><p>Bed, storage drawer and wardrobe assemble; the drawer opens.</p><div class="sku">MAGNUM-20 · 5001 · STACK-5 · 4201</div></div>
+    <div class="scene"><span class="t">Hub · click</span><h4>Isometric campus</h4><p>Academic block, library, labs, hostel, cafeteria, auditorium, admin office. Hover shows a card; click opens the range.</p><div class="sku">14 catalogue chapters → 7 buildings</div></div>
+    <div class="scene"><span class="t">Product · drag</span><h4>Product viewer</h4><p>On hero product pages: rotate the model, switch laminate and powder-coat finishes, see dimensions.</p><div class="sku">About 20 hero models</div></div>
+  </div>
+  <h3>Three quality tiers, chosen per device</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Tier</th><th>Who gets it</th><th>What they see</th></tr></thead>
+    <tbody>
+      <tr><td class="k">High</td><td>Desktop and recent phones with a good GPU</td><td>Real-time 3D (Three.js), live lighting, finish switching</td></tr>
+      <tr><td class="k">Lite</td><td>Mid-range Android, slow networks</td><td>The same scenes pre-rendered as image sequences that scrub with the scroll</td></tr>
+      <tr><td class="k">Still</td><td>Reduced-motion setting, very old devices, search engines</td><td>One finished render per scene plus all text; nothing is hidden behind the animation</td></tr>
+    </tbody>
+  </table></div>
+  <p>Tier detection runs before any heavy file loads, so a budget phone never downloads the 3D bundle.</p>
+</section>
+
+<section id="sitemap">
+  <span class="num">03</span>
+  <h2>Sitemap and pages</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>URL</th><th>Page</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>/</code></td><td>Home</td><td>3D campus story, stats, client logos, featured projects, enquiry</td></tr>
+      <tr><td><code>/campus</code></td><td>Campus explorer</td><td>Full-screen isometric hub; each building links to a range</td></tr>
+      <tr><td><code>/furniture/[range]</code></td><td>Range page</td><td>e.g. <code>/furniture/lecture-hall-seating</code>, filters by seater type, material, institution type</td></tr>
+      <tr><td><code>/furniture/[range]/[model]</code></td><td>Product page</td><td>e.g. <code>/furniture/classroom-desks/scholar-90-1102</code>: gallery or 3D viewer, specs table, finishes, related, “Add to quote”</td></tr>
+      <tr><td><code>/projects</code>, <code>/projects/[slug]</code></td><td>Projects</td><td>Case studies: LPU, Chandigarh University, OP Jindal, IIM Rohtak, AMU and more, with the products used</td></tr>
+      <tr><td><code>/quote</code></td><td>Quote basket</td><td>Products and quantities collected while browsing; one form sends it</td></tr>
+      <tr><td><code>/plan-a-room</code></td><td>Room planner (phase 2)</td><td>Enter room size and student count; get a suggested layout and bill of quantities</td></tr>
+      <tr><td><code>/catalogue</code></td><td>Catalogue</td><td>Full PDF and per-chapter PDFs; light gate (name, institution, phone)</td></tr>
+      <tr><td><code>/about</code></td><td>About</td><td>Since 1996, founder’s message, infrastructure (Biesse, Altendorf, laser, powder coating), certifications, PAN India network</td></tr>
+      <tr><td><code>/visit</code></td><td>Factory visit</td><td>Book a visit to the Gharaunda plant</td></tr>
+      <tr><td><code>/resources</code></td><td>Guides</td><td>Classroom layout norms, tender checklists, care guides (SEO content)</td></tr>
+      <tr><td><code>/contact</code></td><td>Contact</td><td>Phones, WhatsApp, address, map link, regional offices</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Product ranges (from the catalogue)</h3>
+  <p>Institutional: lecture-hall seating, classroom desks, kids’ furniture, teacher tables, study and training chairs, library, hostel, cafeteria, laboratory, auditorium, public seating. Office: executive and staff desks, boardroom and conference tables, workstations, reception, premium and mesh chairs, sofas, office storage (wooden and metal).</p>
+</section>
+
+<section id="frontend">
+  <span class="num">04</span>
+  <h2>Frontend</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Layer</th><th>Choice</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Framework</td><td>Next.js (App Router) + TypeScript</td><td>Static and incrementally rebuilt pages for SEO and speed; one codebase with the CMS</td></tr>
+      <tr><td class="k">Styling</td><td>Tailwind CSS with design tokens</td><td>Enforces the audit rules: one accent, six type sizes, 44 px tap targets</td></tr>
+      <tr><td class="k">3D</td><td>Three.js via React Three Fiber + drei</td><td>Mature, large community, works with glTF models</td></tr>
+      <tr><td class="k">Scroll motion</td><td>GSAP ScrollTrigger + Lenis smooth scroll</td><td>Scroll-scrubbed timelines for the room assembly; the same timeline drives image sequences in the Lite tier</td></tr>
+      <tr><td class="k">UI motion</td><td>Motion (Framer Motion)</td><td>Menus, cards, quote basket</td></tr>
+      <tr><td class="k">Device tiering</td><td>detect-gpu + network hints</td><td>Chooses High / Lite / Still before loading 3D</td></tr>
+      <tr><td class="k">Images</td><td>next/image with AVIF/WebP and responsive sizes</td><td>Current site sends 2.5 MB PNGs; target under 200 KB per image</td></tr>
+      <tr><td class="k">Forms</td><td>React Hook Form + Zod</td><td>Same validation schema reused on the server</td></tr>
+      <tr><td class="k">Quote basket</td><td>Client state (Zustand) persisted locally, synced on submit</td><td>Works without login</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Design system rules carried over from the audit</h3>
+  <ul class="clean">
+    <li>One H1 per page, real heading order, alt text on every image</li>
+    <li>Brand red only on actions; neutrals everywhere else</li>
+    <li>Left-aligned body text at 17 px; one font family plus a mono for model codes</li>
+    <li>Mobile: one bottom bar with Call and Enquire instead of floating buttons</li>
+    <li>WCAG 2.2 AA contrast, keyboard navigation, reduced-motion support</li>
+  </ul>
+</section>
+
+<section id="assets">
+  <span class="num">05</span>
+  <h2>3D asset pipeline</h2>
+  <p>We build roughly 20 hero models in 3D, not all 400 catalogue models. The rest use studio photography.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Step</th><th>Tool</th><th>Output</th></tr></thead>
+    <tbody>
+      <tr><td class="k">1. Source</td><td>Factory CAD (SolidWorks / AutoCAD / Cabinet Vision) or measured modelling</td><td>Accurate geometry for each hero product</td></tr>
+      <tr><td class="k">2. Clean-up</td><td>Blender</td><td>Low-poly mesh (under 30k triangles per item), UVs, baked lighting</td></tr>
+      <tr><td class="k">3. Materials</td><td>Blender / Substance</td><td>Laminate textures from the catalogue’s standard shades; powder-coat colours as swappable materials</td></tr>
+      <tr><td class="k">4. Export</td><td>glTF with Draco geometry and KTX2 textures</td><td>Usually 300–800 KB per product</td></tr>
+      <tr><td class="k">5. Scene renders</td><td>Blender Cycles</td><td>Image sequences (about 90 frames per scene, WebP) for the Lite tier and still renders for SEO</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout"><b>Photography in parallel</b>Studio shoot of every catalogue model on a seamless white background, front, three-quarter and detail angles. This replaces the current mix of banners with text baked into images.</div>
+</section>
+
+<section id="backend">
+  <span class="num">06</span>
+  <h2>Backend</h2>
+  <pre class="mermaid">
+flowchart LR
+  V[Visitor] --> FE[Next.js site<br/>CDN edge]
+  FE -->|content| CMS[Payload CMS<br/>Node.js]
+  FE -->|search| MS[Meilisearch]
+  FE -->|enquiry / quote| API[Lead API]
+  CMS --> DB[(PostgreSQL)]
+  API --> DB
+  CMS --> S3[(Object storage<br/>images, 3D, PDFs)]
+  API --> ZOHO[Zoho CRM<br/>Leads]
+  API --> WA[WhatsApp<br/>Business API]
+  API --> MAIL[Email<br/>SES / Resend]
+  API --> PDF[Quote PDF<br/>generator]
+  </pre>
+  <div class="tbl"><table>
+    <thead><tr><th>Component</th><th>Choice</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="k">CMS + admin</td><td>Payload CMS (open source, Node.js, runs inside Next.js)</td><td>JIPH staff edit products, projects, finishes and blog posts. No per-seat licence fees.</td></tr>
+      <tr><td class="k">Database</td><td>PostgreSQL (AWS RDS Mumbai, or Neon / Supabase in ap-south-1)</td><td>Products, leads, quotes; daily backups with point-in-time recovery</td></tr>
+      <tr><td class="k">Search</td><td>Meilisearch</td><td>Typo-tolerant search on names and codes: “scholr 90”, “1102”, “bunk bed”</td></tr>
+      <tr><td class="k">Media</td><td>S3 or Cloudflare R2 behind a CDN</td><td>Images, glTF models, image sequences, PDFs</td></tr>
+      <tr><td class="k">Hosting</td><td>Vercel (frontend) or a single AWS Mumbai setup</td><td>Data stays in India, which helps with DPDP Act compliance</td></tr>
+      <tr><td class="k">Auth</td><td>Payload auth with roles</td><td>Admin, Sales (sees leads), Content (edits products). Dealer login in phase 3.</td></tr>
+      <tr><td class="k">Spam</td><td>Cloudflare Turnstile + rate limits</td><td>No visual puzzles for real buyers</td></tr>
+      <tr><td class="k">Analytics</td><td>GA4 + Microsoft Clarity</td><td>Events: scene reached, product viewed, quote item added, enquiry sent, catalogue downloaded</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="data">
+  <span class="num">07</span>
+  <h2>Data model</h2>
+  <div class="two">
+    <div class="box"><h4>Range</h4><ul><li>name, slug, segment (institutional / office)</li><li>campus building it belongs to</li><li>hero image, 3D scene, intro text</li><li>sort order</li></ul></div>
+    <div class="box"><h4>Product</h4><ul><li>model name (Scholar 90), code (1102, unique)</li><li>range, series, seater type</li><li>dimensions W × D × H in mm</li><li>materials, highlights, features</li><li>finishes allowed, images, 3D model, spec PDF, CAD file</li><li>tags: school, college, hostel, govt project</li><li>related products</li></ul></div>
+    <div class="box"><h4>Finish</h4><ul><li>type: laminate or powder coat</li><li>shade code and name (e.g. 638 Lorrian)</li><li>swatch image, texture for 3D</li><li>matte / semi-gloss / textured</li></ul></div>
+    <div class="box"><h4>Project</h4><ul><li>client, city, state, sector</li><li>year, seats or units supplied</li><li>products used (links to Product)</li><li>photos, testimonial</li></ul></div>
+    <div class="box"><h4>Lead</h4><ul><li>name, role, institution, phone, email, city</li><li>project type, size, budget band, timeline</li><li>source page, UTM, device tier</li><li>status, owner, Zoho ID</li><li>consent record (DPDP)</li></ul></div>
+    <div class="box"><h4>Quote request</h4><ul><li>lead reference</li><li>items: product, quantity, finish</li><li>generated PDF</li><li>status: new, contacted, quoted, won, lost</li></ul></div>
+  </div>
+  <p style="margin-top:14px">Also: Certification, Testimonial, Machine (infrastructure page), Office location, Site-visit booking, Download log, Blog post.</p>
+</section>
+
+<section id="api">
+  <span class="num">08</span>
+  <h2>API and integrations</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Endpoint</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>GET /api/ranges</code></td><td>All ranges with campus building mapping</td></tr>
+      <tr><td><code>GET /api/products?range=&amp;tag=&amp;q=</code></td><td>Filtered product list</td></tr>
+      <tr><td><code>GET /api/products/:code</code></td><td>One product with finishes, assets, related items</td></tr>
+      <tr><td><code>GET /api/search?q=</code></td><td>Proxy to Meilisearch</td></tr>
+      <tr><td><code>POST /api/enquiries</code></td><td>Enquiry form: validates, stores, pushes to Zoho, notifies sales</td></tr>
+      <tr><td><code>POST /api/quotes</code></td><td>Quote basket: stores items, builds a PDF bill of quantities, emails the buyer a copy</td></tr>
+      <tr><td><code>POST /api/visits</code></td><td>Factory visit booking with preferred date</td></tr>
+      <tr><td><code>POST /api/downloads</code></td><td>Catalogue gate: logs the lead, returns a signed download link</td></tr>
+      <tr><td><code>POST /api/revalidate</code></td><td>CMS webhook that rebuilds changed pages</td></tr>
+    </tbody>
+  </table></div>
+  <h3>When a lead comes in</h3>
+  <ol class="clean">
+    <li>Saved to PostgreSQL first, so nothing is lost if an outside service is down.</li>
+    <li>Created as a Lead in Zoho CRM with source, products of interest and UTM fields. A retry queue covers Zoho outages.</li>
+    <li>WhatsApp message to the assigned salesperson, and a WhatsApp confirmation to the buyer (template message, with their consent).</li>
+    <li>Email confirmation to the buyer with the quote PDF attached, if one was requested.</li>
+  </ol>
+  <div class="callout"><b>No prices on the site</b>The quote PDF lists models, codes, sizes, finishes and quantities only. Pricing stays with the sales team. A dealer price list can come later behind a login.</div>
+</section>
+
+<section id="seo">
+  <span class="num">09</span>
+  <h2>SEO and migration</h2>
+  <ul class="clean">
+    <li><b>Redirect map:</b> 301 every old URL to its new page. Several current links are broken, for example <code>/staff-office-tablestaff%20office%20table</code> and <code>/tablestables</code>.</li>
+    <li><b>One page per model</b> (about 400), each with a unique title such as “Scholar 90 Classroom Desk (1102) | JIPH”.</li>
+    <li><b>Structured data:</b> Organization, LocalBusiness (Gharaunda plant), Product, BreadcrumbList, FAQ on guides.</li>
+    <li><b>Text outside the 3D:</b> every scene’s copy is real HTML, so search engines and screen readers read it all.</li>
+    <li><b>Clean-up:</b> remove the leftover template text (“Smart Digital Agency”, “Get Mobile App”), duplicate H1s and empty headings found in the audit.</li>
+    <li><b>Search Console:</b> verify, submit XML sitemaps, monitor index coverage after launch.</li>
+  </ul>
+</section>
+
+<section id="perf">
+  <span class="num">10</span>
+  <h2>Performance budget and QA</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Metric</th><th>Current site</th><th>Target</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Page weight (first load)</td><td>6.8 MB, 144 requests</td><td>Under 1.2 MB before 3D; 3D streams in after</td></tr>
+      <tr><td class="k">Load time</td><td>About 5.1 s</td><td>LCP under 2.5 s on 4G mobile</td></tr>
+      <tr><td class="k">Layout shift (CLS)</td><td>Not measured</td><td>Under 0.1</td></tr>
+      <tr><td class="k">Interaction (INP)</td><td>Not measured</td><td>Under 200 ms</td></tr>
+      <tr><td class="k">3D frame rate</td><td>None</td><td>60 fps on desktop, 30+ fps on mid-range phones (otherwise the Lite tier)</td></tr>
+      <tr><td class="k">Images without alt text</td><td>85 of 107</td><td>0</td></tr>
+    </tbody>
+  </table></div>
+  <p>QA: test on real devices (iPhone, Samsung A-series, Redmi), Chrome, Safari and Firefox; Lighthouse CI on every pull request; Playwright tests for the enquiry and quote flows; a load test on the lead API before launch.</p>
+</section>
+
+<section id="catalogue">
+  <span class="num">11</span>
+  <h2>Catalogue clean-up before import</h2>
+  <p>The catalogue becomes the product database, so its data needs to be consistent. I found these while reading it:</p>
+  <div class="callout warn"><b>Duplicate model codes</b>Code <code>2612</code> is used for Focus-3, Wisdom-30 and Formula-1. Code <code>2904</code> is used for Linux-3 and all four Cozy sofas. Product codes must be unique to work as URLs and in the quote basket.</div>
+  <div class="tbl"><table>
+    <thead><tr><th>Issue</th><th>Where</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Index page numbers all read “00-00”</td><td>Index</td><td>Fill in page numbers (or link chapters in the PDF)</td></tr>
+      <tr><td>Stats differ between catalogue and website</td><td>Milestones page: “2 lakh+ sq ft of spaces”, “1.5 lakh sq ft” facility</td><td>Agree one set of numbers for both</td></tr>
+      <tr><td>“28+ years” since 1996</td><td>Founder’s message</td><td>30 years in 2026</td></tr>
+      <tr><td>“ISO 45001:2015” listed</td><td>Certifications</td><td>ISO 45001 was first published in 2018; check the certificate wording</td></tr>
+      <tr><td>Client name spelling</td><td>Projects: “Bedford School”; website: “Beford School”</td><td>Confirm the correct name</td></tr>
+      <tr><td>Typos</td><td>“Pemium Chair’s”, “Traning”, “Autometic”, “Confrence”, “Gasli”, “Feflex”, “Boash”</td><td>Correct during import</td></tr>
+      <tr><td>Scholar 214 / 228 named in other products’ text</td><td>Scholar 218 and Scholar 25 pages</td><td>Copy-paste errors; rewrite those descriptions</td></tr>
+    </tbody>
+  </table></div>
+  <p>Import approach: extract text into a spreadsheet (one row per model: code, name, range, dimensions, materials, features), JIPH’s team checks it, then a script loads it into the CMS. Product images come from the new photo shoot rather than the PDF.</p>
+</section>
+
+<section id="timeline">
+  <span class="num">12</span>
+  <h2>Timeline and team</h2>
+  <p>About 14 weeks to launch, with the 3D work running alongside the core build.</p>
+  <div class="gantt"><div class="g">
+    <span></span><span class="h">W1</span><span class="h">2</span><span class="h">3</span><span class="h">4</span><span class="h">5</span><span class="h">6</span><span class="h">7</span><span class="h">8</span><span class="h">9</span><span class="h">10</span><span class="h">11</span><span class="h">12</span><span class="h">13</span><span class="h">14</span>
+    <span class="lbl">Discovery &amp; content audit</span><div class="bar" style="grid-column:2 / span 2"></div>
+    <span class="lbl">UX, design, 3D storyboard</span><div class="bar" style="grid-column:3 / span 4"></div>
+    <span class="lbl">Catalogue data &amp; photo shoot</span><div class="bar" style="grid-column:3 / span 5"></div>
+    <span class="lbl">CMS, database, lead API</span><div class="bar" style="grid-column:6 / span 5"></div>
+    <span class="lbl">Frontend pages</span><div class="bar" style="grid-column:7 / span 6"></div>
+    <span class="lbl">3D models &amp; scenes</span><div class="bar a" style="grid-column:6 / span 7"></div>
+    <span class="lbl">QA, SEO migration, launch</span><div class="bar" style="grid-column:13 / span 2"></div>
+  </div></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Role</th><th>Load</th><th>Owns</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Project manager</td><td>Part-time</td><td>Scope, JIPH approvals, schedule</td></tr>
+      <tr><td class="k">UI/UX designer</td><td>Weeks 2–8</td><td>Design system, page designs, 3D storyboards</td></tr>
+      <tr><td class="k">3D artist</td><td>Weeks 5–12</td><td>Models, materials, scene renders</td></tr>
+      <tr><td class="k">Creative frontend developer</td><td>Weeks 6–13</td><td>Three.js scenes, scroll timelines, device tiers</td></tr>
+      <tr><td class="k">Frontend developer</td><td>Weeks 6–13</td><td>Pages, product templates, quote basket, forms</td></tr>
+      <tr><td class="k">Backend developer</td><td>Weeks 5–12</td><td>Payload CMS, PostgreSQL, search, Zoho and WhatsApp integration</td></tr>
+      <tr><td class="k">QA + content</td><td>Weeks 9–14</td><td>Device testing, data entry checks, redirects</td></tr>
+    </tbody>
+  </table></div>
+  <h3>After launch</h3>
+  <ul class="clean">
+    <li><b>Phase 2 (2–3 months later):</b> room planner with layout suggestion and bill of quantities; per-product CAD downloads.</li>
+    <li><b>Phase 3:</b> dealer and franchise portal with price lists and order tracking; Hindi version of key pages.</li>
+  </ul>
+</section>
+
+<section id="needs">
+  <span class="num">13</span>
+  <h2>What we need from JIPH</h2>
+  <ul class="clean">
+    <li>CAD files for the ~20 hero products, or access to the samples for measuring</li>
+    <li>A product spreadsheet check: one owner to confirm codes, sizes and names</li>
+    <li>Photo shoot access at the Gharaunda plant, plus project photos with client permission</li>
+    <li>Logo as a vector file, brand colours, laminate and powder-coat swatch scans</li>
+    <li>Zoho CRM API access and the lead field mapping sales wants</li>
+    <li>WhatsApp Business number and approved message templates</li>
+    <li>Domain and DNS access, Google Search Console and Analytics access</li>
+    <li>Real testimonials with the person’s name, role and institution, and their consent</li>
+  </ul>
+  <p class="ok">Next step: a one-hour kickoff to confirm scope, pick the 20 hero products and the four homepage scenes.</p>
+</section>
+</main>
+</div>

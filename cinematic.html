@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JIPH — Built for Institutions</title>
+<meta name="description" content="JIPH Furniture designs, manufactures and installs desks, seating, storage and hostel furniture for schools, universities and offices across India.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0B0C;
+    --ink-2:#161618;
+    --paper:#F2F1EE;
+    --white:#FFFFFF;
+    --mute:#8E8E93;
+    --mute-dark:#5C5C61;
+    --line:rgba(255,255,255,.14);
+    --accent:#E1000F;
+    --display:"Inter Tight",Inter,-apple-system,"Segoe UI",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+    --pad:clamp(16px,3vw,40px);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{overflow-x:clip}
+  body{background:var(--ink);color:var(--white);font-family:var(--display);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+
+  /* ---------- top bar ---------- */
+  .bar{position:fixed;inset:0 0 auto 0;z-index:40;display:flex;justify-content:space-between;align-items:center;padding:18px var(--pad);mix-blend-mode:difference;color:#fff}
+  .bar nav{display:flex;gap:28px}
+  .bar a{display:inline-flex;align-items:center;min-height:44px}
+  .bar a:hover{opacity:.6}
+  @media (max-width:760px){.bar nav{display:none}}
+
+  /* ---------- scroll film ---------- */
+  .film{position:relative;height:460vh}
+  .stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--paper)}
+  .layer{position:absolute;inset:0}
+
+  .room img{width:100%;height:100%;object-fit:cover;transform-origin:50% 60%;will-change:transform}
+  .room::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,rgba(0,0,0,0) 35%,rgba(0,0,0,.55) 100%)}
+  .whiteout{background:var(--paper);opacity:0;will-change:opacity}
+
+  .title{display:flex;flex-direction:column;justify-content:flex-end;padding:0 var(--pad) clamp(24px,5vh,56px);will-change:transform,opacity}
+  .title h1{font-weight:800;font-size:clamp(96px,24vw,360px);line-height:.8;letter-spacing:-.06em;margin-left:-.04em}
+  .title .row{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:clamp(12px,2vh,24px)}
+  .title .row p{max-width:280px;font-size:15px;line-height:1.4}
+  .corner{position:absolute;padding:0 var(--pad)}
+  .corner.tl{top:84px;left:0}
+  .corner.tr{top:84px;right:0;text-align:right}
+
+  .product{display:grid;place-items:center;pointer-events:none}
+  .product .obj{position:relative;width:min(46vw,520px);aspect-ratio:1;opacity:0;will-change:transform,opacity}
+  .product img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+
+  .callout{position:absolute;display:flex;align-items:center;gap:10px;color:var(--ink);opacity:0;white-space:nowrap;will-change:opacity,transform}
+  .callout i{display:block;height:1px;width:56px;background:var(--ink)}
+  .callout b{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none}
+  .c1{top:20%;left:62%}
+  .c2{top:41%;left:66%}
+  .c3{top:36%;right:80%;flex-direction:row-reverse}
+  .c4{top:66%;right:84%;flex-direction:row-reverse}
+
+  .stage-meta{color:var(--ink);opacity:0}
+  .stage-meta .corner.tl,.stage-meta .corner.tr{color:var(--ink)}
+  .stage-meta .bl{position:absolute;left:0;bottom:clamp(24px,5vh,48px);padding:0 var(--pad)}
+  .stage-meta .bl strong{display:block;font-size:clamp(28px,4vw,48px);font-weight:800;letter-spacing:-.03em;line-height:1}
+
+  .panel{position:absolute;right:var(--pad);bottom:clamp(24px,5vh,48px);width:min(380px,calc(100% - 2*var(--pad)));background:rgba(11,11,12,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:20px;padding:28px;color:#fff;opacity:0;transform:translateY(40px);will-change:transform,opacity}
+  .panel h2{font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1.15;margin:10px 0 8px}
+  .panel p{color:#B4B4BA;font-size:15px}
+  .panel ul{list-style:none;margin:18px 0 22px;border-top:1px solid var(--line)}
+  .panel li{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .panel li span:first-child{color:var(--mute)}
+  .btns{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:999px;font-weight:600;font-size:15px;transition:transform .2s,background .2s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-red{background:var(--accent);color:#fff}
+  .btn-ghost{border:1px solid var(--line);color:#fff}
+  .btn-ghost:hover{background:rgba(255,255,255,.06)}
+
+  .progress{position:absolute;left:var(--pad);right:var(--pad);top:70px;height:1px;background:rgba(127,127,127,.25)}
+  .progress span{display:block;height:100%;width:0;background:var(--accent)}
+
+  @media (max-width:760px){
+    .product .obj{width:78vw;margin-bottom:28vh}
+    .callout{display:none}
+    .stage-meta .bl{bottom:auto;top:110px}
+    .corner.tr{display:none}
+    .panel{bottom:90px;padding:22px}
+    .panel ul{display:none}
+  }
+
+  /* ---------- post-film sections ---------- */
+  section{padding:clamp(80px,12vw,160px) var(--pad)}
+  .wrap{max-width:1240px;margin:0 auto}
+  .kicker{color:var(--mute);margin-bottom:20px}
+  h2.big{font-size:clamp(40px,7vw,104px);font-weight:800;letter-spacing:-.045em;line-height:.95}
+  .lede{color:#B4B4BA;font-size:clamp(17px,1.6vw,20px);max-width:520px;margin-top:24px}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:72px;border-top:1px solid var(--line)}
+  .stats div{padding:28px 20px 0 0}
+  .stats b{display:block;font-size:clamp(32px,4.4vw,64px);font-weight:800;letter-spacing:-.04em;line-height:1}
+  .stats span{display:block;margin-top:10px;color:var(--mute)}
+  @media (max-width:760px){.stats{grid-template-columns:1fr 1fr}.stats div{padding-bottom:28px}}
+
+  .reel{display:grid;grid-auto-flow:column;grid-auto-columns:min(78vw,420px);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;margin-top:56px;padding-bottom:16px;scrollbar-width:none}
+  .reel::-webkit-scrollbar{display:none}
+  .card{scroll-snap-align:start;background:var(--ink-2);border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
+  .card .img{aspect-ratio:4/5;overflow:hidden}
+  .card img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+  .card:hover img{transform:scale(1.04)}
+  .card .meta{display:flex;justify-content:space-between;align-items:center;padding:18px 20px}
+  .card h3{font-size:22px;font-weight:600;letter-spacing:-.02em}
+  .card .mono{color:var(--mute)}
+  .reel-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+
+  .light{background:var(--paper);color:var(--ink)}
+  .light .kicker,.light .lede{color:var(--mute-dark)}
+  .plist{list-style:none;margin-top:56px;border-top:1px solid rgba(0,0,0,.14)}
+  .plist li{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:24px;padding:22px 0;border-bottom:1px solid rgba(0,0,0,.14);position:relative}
+  .plist h3{font-size:clamp(22px,3vw,40px);font-weight:600;letter-spacing:-.03em;line-height:1.1}
+  .plist .mono{color:var(--mute-dark)}
+  .plist .thumb{position:absolute;right:18%;top:50%;width:240px;aspect-ratio:4/3;border-radius:12px;overflow:hidden;opacity:0;transform:translateY(-50%) scale(.92);transition:opacity .3s,transform .3s;pointer-events:none;z-index:2}
+  .plist .thumb img{width:100%;height:100%;object-fit:cover}
+  .plist li:hover .thumb{opacity:1;transform:translateY(-50%) scale(1)}
+  @media (max-width:760px){.plist li{grid-template-columns:40px 1fr}.plist li>.mono:last-of-type{display:none}.plist .thumb{display:none}}
+
+  .steps{display:grid;grid-template-columns:repeat(6,1fr);margin-top:72px}
+  .steps li{list-style:none;padding:24px 20px 0 0;border-top:1px solid var(--line)}
+  .steps .mono{color:var(--accent)}
+  .steps h3{font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:10px}
+  .steps p{color:var(--mute);font-size:15px;margin-top:6px}
+  @media (max-width:900px){.steps{grid-template-columns:1fr 1fr 1fr;row-gap:32px}}
+  @media (max-width:560px){.steps{grid-template-columns:1fr 1fr}}
+
+  .quote{max-width:980px}
+  .quote blockquote{font-size:clamp(26px,3.6vw,48px);font-weight:500;letter-spacing:-.025em;line-height:1.15}
+  .quote footer{margin-top:32px;color:var(--mute)}
+
+  .end{padding-bottom:0;overflow:hidden}
+  .end .btns{margin-top:36px}
+  .wordmark{font-weight:800;font-size:clamp(120px,34vw,520px);line-height:.75;letter-spacing:-.07em;margin:clamp(60px,10vw,120px) 0 0 -.04em;color:var(--ink-2);user-select:none}
+  .foot{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-top:96px;padding-top:32px;border-top:1px solid var(--line);color:var(--mute);font-size:14px}
+  .foot h4{color:#fff;font-weight:600;font-size:14px;margin-bottom:8px}
+  .foot ul{list-style:none}
+  .foot li a{display:inline-flex;min-height:34px;align-items:center}
+  .foot a:hover{color:#fff}
+  @media (max-width:760px){.foot{grid-template-columns:1fr 1fr}.foot>div:first-child{grid-column:1/-1}}
+
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* mobile quick contact */
+  .mbar{display:none}
+  @media (max-width:760px){
+    body{padding-bottom:74px}
+    .mbar{display:flex;gap:10px;position:fixed;inset:auto 0 0 0;z-index:50;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(11,11,12,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line)}
+    .mbar .btn{flex:1}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .film{height:auto}
+    .stage{position:relative}
+    .reveal{opacity:1;transform:none;transition:none}
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="bar mono">
+  <a href="#" aria-label="JIPH home"><strong>JIPH®</strong>&nbsp;— Built for institutions</a>
+  <nav aria-label="Primary">
+    <a href="#range">Range</a>
+    <a href="#projects">Projects</a>
+    <a href="#process">Process</a>
+    <a href="#enquire">Enquire (→)</a>
+  </nav>
+</header>
+
+<main>
+  <!-- ===== Scroll film: room → whiteout → product → enquiry panel ===== -->
+  <div class="film" id="film">
+    <div class="stage" aria-label="JIPH product film">
+      <div class="layer room"><img id="room" src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a1d4f51296958.60129563.png" alt="Lecture hall furnished with JIPH tiered desks and upholstered seating" fetchpriority="high"></div>
+      <div class="layer whiteout" id="whiteout"></div>
+
+      <div class="layer title" id="title">
+        <div class="corner tl mono">Series 01 — Lecture hall</div>
+        <div class="corner tr mono">Gharaunda, Haryana<br>Est. manufacturing unit</div>
+        <div class="row">
+          <p>Desks, seating and storage — designed, made and installed by one team for campuses that outlast every batch.</p>
+          <span class="mono">Scroll ↓</span>
+        </div>
+        <h1>JIPH</h1>
+      </div>
+
+      <div class="layer product"><div class="obj" id="obj">
+        <img src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a7d9ba09b4298.72086571.png" alt="JIPH Focus3 study table in wood-finish laminate with pinboard, task light and power sockets">
+        <div class="callout c1 mono"><b></b><i></i>LED task light</div>
+        <div class="callout c2 mono"><b></b><i></i>Pinboard panel</div>
+        <div class="callout c3 mono"><b></b><i></i>Built-in power</div>
+        <div class="callout c4 mono"><b></b><i></i>Open storage bay</div>
+      </div></div>
+
+      <div class="layer stage-meta" id="meta">
+        <div class="corner tl mono">Model — Focus3 · 2612</div>
+        <div class="corner tr mono">Hostels · Libraries · Study halls</div>
+        <div class="bl"><span class="mono">Study table</span><strong>Focus3</strong></div>
+      </div>
+
+      <aside class="panel" id="panel" aria-label="Enquire about Focus3">
+        <span class="mono" style="color:var(--mute)">Built to order</span>
+        <h2>Furnish a whole floor, not just a room.</h2>
+        <p>Share your layout and quantities. We send drawings, a sample and a quote.</p>
+        <ul>
+          <li><span>Range</span><span>Study tables</span></li>
+          <li><span>Finish</span><span>Wood-finish laminate</span></li>
+          <li><span>Project size</span><span>₹1 Cr and above</span></li>
+        </ul>
+        <div class="btns">
+          <a class="btn btn-red" href="#enquire">Request a quote</a>
+          <a class="btn btn-ghost" href="https://www.jiph.in/study-table-focus3-2612">Details</a>
+        </div>
+      </aside>
+
+      <div class="progress" aria-hidden="true"><span id="prog"></span></div>
+    </div>
+  </div>
+
+  <!-- ===== Scale ===== -->
+  <section aria-labelledby="scale-h">
+    <div class="wrap">
+      <p class="kicker mono reveal">01 — Scale</p>
+      <h2 class="big reveal" id="scale-h">Five lakh desks.<br>One factory floor.</h2>
+      <p class="lede reveal">Every piece is made in our own 1.5 lakh sq ft facility on NH-1, then delivered and installed by our crews across India.</p>
+      <div class="stats reveal">
+        <div><b data-count="500000" data-fmt="in">5,00,000+</b><span>Desks delivered</span></div>
+        <div><b data-count="100000" data-fmt="in">1,00,000+</b><span>Workstations installed</span></div>
+        <div><b data-count="15000" data-fmt="in">15,000+</b><span>Institutional clients</span></div>
+        <div><b>1.5L</b><span>Sq ft facility</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Range reel ===== -->
+  <section id="range" aria-labelledby="range-h" style="padding-top:0">
+    <div class="wrap">
+      <div class="reel-head">
+        <div>
+          <p class="kicker mono reveal">02 — Range</p>
+          <h2 class="big reveal" id="range-h">Four ranges.<br>Every room.</h2>
+        </div>
+        <span class="mono reveal" style="color:var(--mute)">Drag →</span>
+      </div>
+      <div class="reel reveal">
+        <a class="card" href="https://www.jiph.in/education"><div class="img"><img loading="lazy" src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a4367390869e5.71750837.png" alt="Lecture hall desks and seating"></div><div class="meta"><h3>Education</h3><span class="mono">Desks · Benches · Labs</span></div></a>
+        <a class="card" href="https://www.jiph.in/tables"><div class="img"><img loading="lazy" src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a436606b74f39.71821191.png" alt="Office and conference tables"></div><div class="meta"><h3>Tables</h3><span class="mono">Office · Conference</span></div></a>
+        <a class="card" href="https://www.jiph.in/seating"><div class="img"><img loading="lazy" src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a436615e91d36.93375356.png" alt="Office and education seating"></div><div class="meta"><h3>Seating</h3><span class="mono">Mesh · Task · Auditorium</span></div></a>
+        <a class="card" href="https://www.jiph.in/storage"><div class="img"><img loading="lazy" src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a4366d6d69ad5.94722903.png" alt="Metal and wooden storage"></div><div class="meta"><h3>Storage</h3><span class="mono">Metal · Wood · Lockers</span></div></a>
+        <a class="card" href="https://www.jiph.in/hostel-furniture"><div class="img"><img loading="lazy" src="https://www.jiph.in/wvs-pannel/uploads/product/img_6a0d5800c182c0.95337946.png" alt="Hostel beds and wardrobes"></div><div class="meta"><h3>Hostel</h3><span class="mono">Beds · Wardrobes</span></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Projects ===== -->
+  <section id="projects" class="light" aria-labelledby="proj-h">
+    <div class="wrap">
+      <p class="kicker mono reveal">03 — Projects</p>
+      <h2 class="big reveal" id="proj-h">Campuses we’ve<br>furnished.</h2>
+      <ol class="plist reveal">
+        <li><span class="mono">01</span><h3>Lovely Professional University</h3><span class="mono">University</span><span class="thumb"><img loading="lazy" src="https://www.jiph.in/assets/images/1.png" alt=""></span></li>
+        <li><span class="mono">02</span><h3>Chitkara University</h3><span class="mono">University</span><span class="thumb"><img loading="lazy" src="https://www.jiph.in/assets/images/6.png" alt=""></span></li>
+        <li><span class="mono">03</span><h3>DPS Group</h3><span class="mono">School group</span><span class="thumb"><img loading="lazy" src="https://www.jiph.in/assets/images/2.png" alt=""></span></li>
+        <li><span class="mono">04</span><h3>Rishihood University</h3><span class="mono">University</span><span class="thumb"><img loading="lazy" src="https://www.jiph.in/assets/images/4.png" alt=""></span></li>
+        <li><span class="mono">05</span><h3>K.R. Mangalam University</h3><span class="mono">University</span><span class="thumb"><img loading="lazy" src="https://www.jiph.in/assets/images/5.png" alt=""></span></li>
+        <li><span class="mono">06</span><h3>Beford School</h3><span class="mono">School</span><span class="thumb"><img loading="lazy" src="https://www.jiph.in/assets/images/3.png" alt=""></span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== Process ===== -->
+  <section id="process" aria-labelledby="proc-h">
+    <div class="wrap">
+      <p class="kicker mono reveal">04 — Process</p>
+      <h2 class="big reveal" id="proc-h">Drawing to<br>delivery.</h2>
+      <ol class="steps reveal">
+        <li><span class="mono">01</span><h3>Consult</h3><p>Site visit and requirement mapping.</p></li>
+        <li><span class="mono">02</span><h3>Design</h3><p>Layouts and samples for approval.</p></li>
+        <li><span class="mono">03</span><h3>Manufacture</h3><p>In our own Gharaunda facility.</p></li>
+        <li><span class="mono">04</span><h3>Deliver</h3><p>Scheduled to your session start.</p></li>
+        <li><span class="mono">05</span><h3>Install</h3><p>By our crews, on site.</p></li>
+        <li><span class="mono">06</span><h3>Support</h3><p>After-sales service.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== Quote ===== -->
+  <section style="padding-top:0" aria-label="Client testimonial">
+    <div class="wrap quote reveal">
+      <p class="kicker mono">05 — In their words</p>
+      <blockquote>“We purchased hostel beds and wardrobes, and the quality is outstanding. Delivery was on time and installation was smooth.”</blockquote>
+      <footer class="mono">Neha Verma — College Administrator</footer>
+    </div>
+  </section>
+
+  <!-- ===== Enquire + footer ===== -->
+  <section id="enquire" class="end" aria-labelledby="end-h">
+    <div class="wrap">
+      <p class="kicker mono reveal">06 — Next</p>
+      <h2 class="big reveal" id="end-h">Planning a<br>new campus?</h2>
+      <p class="lede reveal">Send your floor plan and quantities. We’ll come back with layouts, samples and a quote.</p>
+      <div class="btns reveal">
+        <a class="btn btn-red" href="mailto:enquiry@jiphfurniture.com">Start an enquiry</a>
+        <a class="btn btn-ghost" href="https://wa.me/917404650000">WhatsApp</a>
+        <a class="btn btn-ghost" href="tel:+917404650000">+91 74046 50000</a>
+      </div>
+
+      <div class="foot">
+        <div>
+          <h4>JIPH Furniture Pvt. Ltd.</h4>
+          <p>Grand Trunk Road, NH-1, near Liberty Shoe Factory,<br>Gharaunda, Haryana 132114</p>
+          <p style="margin-top:10px"><a href="mailto:enquiry@jiphfurniture.com">enquiry@jiphfurniture.com</a></p>
+        </div>
+        <div><h4>Range</h4><ul><li><a href="https://www.jiph.in/education">Education</a></li><li><a href="https://www.jiph.in/tables">Tables</a></li><li><a href="https://www.jiph.in/seating">Seating</a></li><li><a href="https://www.jiph.in/storage">Storage</a></li></ul></div>
+        <div><h4>Company</h4><ul><li><a href="#projects">Projects</a></li><li><a href="#process">Process</a></li><li><a href="#">Blog</a></li><li><a href="#enquire">Contact</a></li></ul></div>
+        <div><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Data deletion</a></li><li><span class="mono" style="display:inline-flex;min-height:34px;align-items:center">© 2026 JIPH</span></li></ul></div>
+      </div>
+      <div class="wordmark" aria-hidden="true">JIPH</div>
+    </div>
+  </section>
+</main>
+
+<div class="mbar">
+  <a class="btn btn-ghost" href="tel:+917404650000">Call</a>
+  <a class="btn btn-red" href="#enquire">Enquire</a>
+</div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = id => document.getElementById(id);
+  const film = $('film'), room = $('room'), white = $('whiteout'), title = $('title'),
+        obj = $('obj'), meta = $('meta'), panel = $('panel'), prog = $('prog');
+  const callouts = [...document.querySelectorAll('.callout')];
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const range = (p, a, b) => clamp((p - a) / (b - a));
+  const ease = t => 1 - Math.pow(1 - t, 3);
+
+  function frame() {
+    const r = film.getBoundingClientRect();
+    const p = clamp(-r.top / (r.height - innerHeight));
+    prog.style.width = (p * 100) + '%';
+
+    // 0 → .35  room pushes in and dissolves into a white studio
+    const a = ease(range(p, 0, .35));
+    room.style.transform = `scale(${1 + a * .22})`;
+    white.style.opacity = range(p, .12, .36);
+    title.style.opacity = 1 - range(p, .04, .2);
+    title.style.transform = `translateY(${-a * 80}px)`;
+
+    // .3 → .55  product rises out of the white
+    const b = ease(range(p, .3, .55));
+    const shift = ease(range(p, .68, .85));
+    const mobile = innerWidth <= 760;
+    obj.style.opacity = b;
+    obj.style.transform = `translate(${mobile ? 0 : -shift * 18}vw, ${(1 - b) * 60}px) scale(${.82 + b * .18})`;
+    meta.style.opacity = range(p, .42, .55);
+
+    // .5 → .7  callouts draw in one by one
+    callouts.forEach((c, i) => {
+      const t = ease(range(p, .5 + i * .04, .58 + i * .04)) * (1 - range(p, .7, .76));
+      c.style.opacity = t;
+      c.style.transform = `translateX(${(1 - t) * (i < 2 ? -12 : 12)}px)`;
+    });
+
+    // .74 → .9  enquiry panel lands
+    const d = ease(range(p, .74, .9));
+    panel.style.opacity = d;
+    panel.style.transform = `translateY(${(1 - d) * 40}px)`;
+    panel.style.pointerEvents = d > .5 ? 'auto' : 'none';
+  }
+
+  if (reduce) {
+    white.style.opacity = 1; title.style.opacity = 0; obj.style.opacity = 1;
+    meta.style.opacity = 1; panel.style.opacity = 1; panel.style.transform = 'none';
+  } else {
+    let ticking = false;
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { frame(); ticking = false; }); } };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    frame();
+  }
+
+  // reveal on view + count-up
+  const fmt = n => n.toLocaleString('en-IN') + '+';
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    e.target.querySelectorAll('[data-count]').forEach(el => {
+      if (reduce) return;
+      const end = +el.dataset.count, t0 = performance.now();
+      const step = now => { const t = ease(clamp((now - t0) / 1400)); el.textContent = fmt(Math.round(end * t)); if (t < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    });
+    io.unobserve(e.target);
+  }), { threshold: .2 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+})();
+</script>
+</body>
+</html>
