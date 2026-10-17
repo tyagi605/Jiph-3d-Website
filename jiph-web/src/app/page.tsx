@@ -1,9 +1,25 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import Link from "next/link";
 import ClassroomBuild from "@/components/ClassroomBuild";
+import type { SequenceManifest } from "@/components/SequencePlayer";
 import { company, projects, stats } from "@/data/catalog";
 import { getRanges } from "@/lib/catalog";
 
-export default function Home() {
+/** Read at build time: rendered classroom frames are used when public/sequences/classroom exists. */
+async function classroomSequence(): Promise<SequenceManifest | null> {
+  "use cache";
+  try {
+    const raw = await readFile(path.join(process.cwd(), "public", "sequences", "classroom", "manifest.json"), "utf8");
+    const m = JSON.parse(raw) as SequenceManifest;
+    return m.frames > 1 && m.desktop?.pattern ? m : null;
+  } catch {
+    return null;
+  }
+}
+
+export default async function Home() {
+  const sequence = await classroomSequence();
   const ranges = getRanges();
   return (
     <>
@@ -17,7 +33,7 @@ export default function Home() {
         </div>
       </section>
 
-      <ClassroomBuild />
+      <ClassroomBuild sequence={sequence} />
 
       <section className="wrap band" aria-labelledby="clients-h">
         <h2 id="clients-h" className="eyebrow center">Trusted by leading institutions</h2>

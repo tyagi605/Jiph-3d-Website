@@ -27,17 +27,6 @@ export type SequenceManifest = {
   mobile?: SequenceVariant;
 };
 
-export async function loadManifest(url: string): Promise<SequenceManifest | null> {
-  try {
-    const res = await fetch(url, { cache: "no-cache" });
-    if (!res.ok) return null;
-    const m = (await res.json()) as SequenceManifest;
-    return m.frames > 1 && m.desktop?.pattern ? m : null;
-  } catch {
-    return null;
-  }
-}
-
 const frameUrl = (base: string, v: SequenceVariant, i: number) =>
   base + v.pattern.replace(/%0(\d)d/, (_, n: string) => String(i + (v.start ?? 1)).padStart(Number(n), "0"));
 

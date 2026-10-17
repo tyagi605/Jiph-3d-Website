@@ -2,10 +2,15 @@
 
 import { Environment, Lightformer, RoundedBox } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Bloom, EffectComposer, SMAA, SSAO } from "@react-three/postprocessing";
+import { Bloom, BrightnessContrast, EffectComposer, SMAA, SSAO, Vignette } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import { useEffect, useMemo, useRef, type ReactNode, type RefObject } from "react";
 import * as THREE from "three";
+import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
+import { fabric, plaster, woodGrain } from "./textures";
+
+// rect-area lights (LED panels) need their lookup tables registered once
+if (typeof window !== "undefined") RectAreaLightUniformsLib.init();
 import { TeacherTable } from "./Furniture";
 import Scholar90 from "./Scholar90";
 import { DESKS, TL } from "./timeline";
@@ -66,7 +71,7 @@ function useFloorTexture() {
     const s = 1024 / n;
     for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
       const l = 92 + Math.random() * 3;
-      g.fillStyle = `hsl(36, 10%, ${l}%)`;
+      g.fillStyle = `hsl(36, 9%, ${l - 6}%)`;
       g.fillRect(i * s, j * s, s, s);
       // faint marble veining
       g.strokeStyle = `hsla(30, 8%, 70%, 0.12)`;
@@ -127,11 +132,11 @@ function useScreenTexture() {
 
 type V3 = [number, number, number];
 
-function B({ s, p, c, r = 0.7, m = 0, cast = true, e, ei, rot }: { s: V3; p: V3; c: string; r?: number; m?: number; cast?: boolean; e?: string; ei?: number; rot?: V3 }) {
+function B({ s, p, c, r = 0.7, m = 0, cast = true, e, ei, rot, map, rmap }: { s: V3; p: V3; c: string; r?: number; m?: number; cast?: boolean; e?: string; ei?: number; rot?: V3; map?: THREE.Texture; rmap?: THREE.Texture }) {
   return (
     <mesh position={p} rotation={rot} castShadow={cast} receiveShadow>
       <boxGeometry args={s} />
-      <meshStandardMaterial color={c} roughness={r} metalness={m} emissive={e ?? "#000000"} emissiveIntensity={ei ?? 0} />
+      <meshStandardMaterial color={c} roughness={r} metalness={m} emissive={e ?? "#000000"} emissiveIntensity={ei ?? 0} map={map ?? null} roughnessMap={rmap ?? null} />
     </mesh>
   );
 }
@@ -140,7 +145,7 @@ function Wall({ w, h, p, rot, c }: { w: number; h: number; p: V3; rot: V3; c: st
   return (
     <mesh position={p} rotation={rot} receiveShadow>
       <planeGeometry args={[w, h]} />
-      <meshStandardMaterial color={c} roughness={0.92} side={THREE.FrontSide} />
+      <meshStandardMaterial color={c} map={plaster([w / 3, h / 3])} roughness={0.9} side={THREE.FrontSide} />
     </mesh>
   );
 }
@@ -157,7 +162,7 @@ function WindowWall() {
   const seg = (z0: number, z1: number, y0: number, y1: number, key: string) => (
     <mesh key={key} position={[x, (y0 + y1) / 2, (z0 + z1) / 2]} castShadow receiveShadow>
       <boxGeometry args={[0.12, y1 - y0, z1 - z0]} />
-      <meshStandardMaterial color={C.wall} roughness={0.92} />
+      <meshStandardMaterial color={C.wall} map={plaster([3, 1])} roughness={0.9} />
     </mesh>
   );
   return (
@@ -193,13 +198,13 @@ function Window({ z }: { z: number }) {
       <B s={[0.05, 0.035, w]} p={[x, sill + h * 0.62, z]} c={C.alu} r={0.3} m={0.7} />
       {/* sill and half-drawn roller blind */}
       <B s={[0.22, 0.03, w + 0.2]} p={[x + 0.1, sill - 0.03, z]} c="#FFFFFF" r={0.4} />
-      <B s={[0.03, h * 0.32, w - 0.06]} p={[x + 0.06, sill + h - h * 0.16, z]} c="#ECE7DE" r={0.95} />
+      <B s={[0.03, h * 0.32, w - 0.06]} p={[x + 0.06, sill + h - h * 0.16, z]} c="#ECE7DE" r={0.95} map={fabric([8, 3])} />
       <B s={[0.06, 0.06, w]} p={[x + 0.07, sill + h + 0.05, z]} c="#FFFFFF" r={0.5} />
     </group>
   );
 }
 
-function LedPendant({ p, len = 2.4 }: { p: V3; len?: number }) {
+function LedPendant({ p, len = 2.4, light = true }: { p: V3; len?: number; light?: boolean }) {
   return (
     <group position={p}>
       <B s={[0.008, 0.45, 0.008]} p={[-len / 2 + 0.1, 0.25, 0]} c="#222" cast={false} />
@@ -209,27 +214,42 @@ function LedPendant({ p, len = 2.4 }: { p: V3; len?: number }) {
         <planeGeometry args={[len - 0.04, 0.05]} />
         <meshStandardMaterial color="#FFFFFF" emissive="#FFF6E8" emissiveIntensity={4} toneMapped={false} />
       </mesh>
+      {light && <rectAreaLight args={["#FFF4E6", 5, len - 0.1, 0.12]} position={[0, -0.04, 0]} rotation={[-Math.PI / 2, 0, 0]} />}
     </group>
   );
 }
 
+/** Snake plant in a ceramic planter: tall, flat, slightly twisted blades. */
 function Plant({ p, s = 1 }: { p: V3; s?: number }) {
-  const leaves = useMemo(() => Array.from({ length: 9 }, (_, i) => {
-    const a = (i / 9) * Math.PI * 2;
-    return { pos: [Math.cos(a) * 0.18 * s, (0.7 + (i % 3) * 0.22) * s, Math.sin(a) * 0.18 * s] as V3, r: (0.18 + (i % 2) * 0.05) * s };
-  }), [s]);
+  const blades = useMemo(() => {
+    let seed = 42;
+    const r = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+    return Array.from({ length: 13 }, (_, i) => ({
+      a: (i / 13) * Math.PI * 2 + r() * 0.4,
+      d: 0.03 + r() * 0.1,
+      h: (0.55 + r() * 0.45) * s,
+      tilt: 0.05 + r() * 0.22,
+      twist: (r() - 0.5) * 1.2,
+      tone: r(),
+    }));
+  }, [s]);
   return (
     <group position={p}>
-      <mesh position={[0, 0.25 * s, 0]} castShadow receiveShadow>
-        <cylinderGeometry args={[0.2 * s, 0.16 * s, 0.5 * s, 24]} />
-        <meshStandardMaterial color="#EDEAE4" roughness={0.6} />
+      <mesh position={[0, 0.24 * s, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.19 * s, 0.15 * s, 0.48 * s, 32]} />
+        <meshStandardMaterial color="#F1EEE8" roughness={0.35} />
       </mesh>
-      <B s={[0.03 * s, 0.5 * s, 0.03 * s]} p={[0, 0.65 * s, 0]} c="#5B4632" />
-      {leaves.map((l, i) => (
-        <mesh key={i} position={l.pos} castShadow>
-          <icosahedronGeometry args={[l.r, 1]} />
-          <meshStandardMaterial color={i % 2 ? "#3E7D47" : "#4F9455"} roughness={0.8} flatShading />
-        </mesh>
+      <mesh position={[0, 0.47 * s, 0]}>
+        <cylinderGeometry args={[0.17 * s, 0.17 * s, 0.02, 32]} />
+        <meshStandardMaterial color="#3B2C20" roughness={1} />
+      </mesh>
+      {blades.map((b, i) => (
+        <group key={i} position={[Math.cos(b.a) * b.d * s, 0.47 * s, Math.sin(b.a) * b.d * s]} rotation={[Math.sin(b.a) * b.tilt, b.twist, -Math.cos(b.a) * b.tilt]}>
+          <mesh position={[0, b.h / 2, 0]} scale={[1, 1, 0.12]} castShadow>
+            <coneGeometry args={[0.035 * s, b.h, 4, 1]} />
+            <meshStandardMaterial color={b.tone > 0.5 ? "#2F6B3A" : "#3D7F45"} roughness={0.55} />
+          </mesh>
+        </group>
       ))}
     </group>
   );
@@ -336,7 +356,7 @@ function Room({ progress, hq }: { progress: RefObject<number>; hq: boolean }) {
           <planeGeometry args={[W, D]} />
           <meshStandardMaterial color="#FFFFFF" roughness={0.95} />
         </mesh>
-        {[-2.2, 0, 2.2].flatMap((z) => [-2.1, 2.1].map((x) => <LedPendant key={`${x}${z}`} p={[x, H - 0.5, z]} />))}
+        {[-2.2, 0, 2.2].flatMap((z) => [-2.1, 2.1].map((x) => <LedPendant key={`${x}${z}`} p={[x, H - 0.5, z]} light={hq} />))}
       </group>
 
       {/* fixtures: pop in one after another */}
@@ -366,13 +386,13 @@ function Room({ progress, hq }: { progress: RefObject<number>; hq: boolean }) {
       ))}
       {/* 3 · teacher's dais */}
       <Pop k={3} gref={setFixture}>
-        <B s={[4.2, 0.12, 1.3]} p={[0, 0.06, -D / 2 + 0.7]} c={C.wood} r={0.55} />
+        <B s={[4.2, 0.12, 1.3]} p={[0, 0.06, -D / 2 + 0.7]} c={C.wood} r={0.45} map={woodGrain([2, 1])} />
       </Pop>
       {/* 4 · storage cabinets + bookshelf on the amber wall */}
       <Pop k={4} gref={setFixture}>
         <group position={[-1.6, 0, D / 2 - 0.26]}>
           <B s={[3.6, 0.86, 0.48]} p={[0, 0.43, 0]} c="#FFFFFF" r={0.4} />
-          <B s={[3.66, 0.035, 0.52]} p={[0, 0.88, 0]} c={C.wood} r={0.5} />
+          <B s={[3.66, 0.035, 0.52]} p={[0, 0.88, 0]} c={C.wood} r={0.4} map={woodGrain([2, 0.4])} />
           {Array.from({ length: 6 }, (_, i) => (
             <group key={i}>
               <B s={[0.005, 0.8, 0.005]} p={[-1.8 + 0.6 * (i + 1), 0.43, -0.245]} c="#DADADA" cast={false} />
@@ -389,7 +409,7 @@ function Room({ progress, hq }: { progress: RefObject<number>; hq: boolean }) {
       <Pop k={5} gref={setFixture}>
         <group position={[1.2, 0, D / 2 - 0.2]}>
           <B s={[1.2, 1.9, 0.36]} p={[0, 0.95, 0]} c="#FFFFFF" r={0.45} />
-          {[0.45, 0.9, 1.35].map((y) => <B key={y} s={[1.14, 0.025, 0.34]} p={[0, y, -0.02]} c={C.wood} r={0.5} />)}
+          {[0.45, 0.9, 1.35].map((y) => <B key={y} s={[1.14, 0.025, 0.34]} p={[0, y, -0.02]} c={C.wood} r={0.45} map={woodGrain([1, 0.4])} />)}
           {[0.12, 0.58, 1.03].map((y, j) => Array.from({ length: 3 }, (_, i) => (
             <B key={`${j}${i}`} s={[0.3, 0.3, 0.28]} p={[-0.38 + i * 0.38, y + 0.15, -0.03]} c={["#2B54C6", "#F2A93B", "#FFFFFF"][(i + j) % 3]} r={0.6} />
           )))}
@@ -398,7 +418,7 @@ function Room({ progress, hq }: { progress: RefObject<number>; hq: boolean }) {
       {/* 6 · door */}
       <Pop k={6} gref={setFixture}>
         <group position={[3.4, 0, D / 2 - 0.03]}>
-          <B s={[1.05, 2.15, 0.05]} p={[0, 1.075, 0]} c="#A87B52" r={0.55} />
+          <B s={[1.05, 2.15, 0.05]} p={[0, 1.075, 0]} c="#A87B52" r={0.5} map={woodGrain([0.6, 1.5])} />
           <B s={[1.17, 2.22, 0.03]} p={[0, 1.11, 0.02]} c="#FFFFFF" r={0.5} />
           <B s={[0.14, 0.025, 0.04]} p={[-0.38, 1.05, -0.04]} c="#C9CDD2" m={0.8} r={0.25} />
           <B s={[0.3, 0.7, 0.01]} p={[0, 1.55, -0.03]} c="#CFE3F2" r={0.1} />
@@ -469,7 +489,9 @@ function Effects() {
   return (
     <EffectComposer multisampling={0} enableNormalPass>
       <SSAO blendFunction={BlendFunction.MULTIPLY} samples={21} radius={0.12} intensity={22} luminanceInfluence={0.55} worldDistanceThreshold={6} worldDistanceFalloff={1} worldProximityThreshold={0.6} worldProximityFalloff={0.3} />
-      <Bloom mipmapBlur luminanceThreshold={1} intensity={0.55} radius={0.6} />
+      <Bloom mipmapBlur luminanceThreshold={1} intensity={0.45} radius={0.55} />
+      <BrightnessContrast brightness={0.02} contrast={0.08} />
+      <Vignette offset={0.32} darkness={0.42} />
       <SMAA />
     </EffectComposer>
   );
@@ -483,7 +505,7 @@ export default function ClassroomScene({ progress, lowPower }: { progress: RefOb
       frameloop="demand"
       dpr={hq ? [1, 1.5] : [1, 1.25]}
       camera={{ fov: 36, near: 0.1, far: 80, position: CAM[0].pos }}
-      gl={{ antialias: !hq, powerPreference: "high-performance", toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
+      gl={{ antialias: !hq, powerPreference: "high-performance", toneMapping: THREE.AgXToneMapping, toneMappingExposure: 0.95 }}
     >
       <color attach="background" args={["#F3F1EE"]} />
       <fog attach="fog" args={["#F3F1EE", 22, 40]} />
@@ -500,7 +522,7 @@ export default function ClassroomScene({ progress, lowPower }: { progress: RefOb
       {/* sun through the windows on the left wall */}
       <directionalLight
         position={[-9, 6.5, 1.5]}
-        intensity={2.4}
+        intensity={1.6}
         color="#FFF1DC"
         castShadow={hq}
         shadow-mapSize={[2048, 2048]}

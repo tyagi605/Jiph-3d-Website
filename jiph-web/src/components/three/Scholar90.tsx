@@ -3,6 +3,7 @@
 import { RoundedBox } from "@react-three/drei";
 import { useMemo } from "react";
 import * as THREE from "three";
+import { speckle } from "./textures";
 
 /**
  * Scholar 90 (1102–1105), modelled from the JIPH product sheet:
@@ -45,7 +46,7 @@ function Tube({ len, at, axis = "y", color }: { len: number; at: [number, number
   return (
     <mesh position={at} castShadow receiveShadow>
       <boxGeometry args={size} />
-      <meshStandardMaterial color={color} metalness={0.65} roughness={0.32} />
+      <meshStandardMaterial color={color} metalness={0.6} roughness={0.38} roughnessMap={speckle([2, 2])} />
     </mesh>
   );
 }
@@ -71,7 +72,7 @@ function PerforatedPanel({ w, h, at, color }: { w: number; h: number; at: [numbe
   return (
     <mesh position={at} castShadow>
       <planeGeometry args={[w, h]} />
-      <meshStandardMaterial color={color} metalness={0.35} roughness={0.42} alphaMap={tex ?? undefined} alphaTest={0.5} transparent={false} side={THREE.DoubleSide} />
+      <meshStandardMaterial color={color} metalness={0.3} roughness={0.48} roughnessMap={speckle([6, 2])} alphaMap={tex ?? undefined} alphaTest={0.5} transparent={false} side={THREE.DoubleSide} />
     </mesh>
   );
 }
@@ -93,7 +94,7 @@ export default function Scholar90({ w, d = 0.93, h = 0.76, f }: { w: number; d?:
     <group>
       {/* Desk top with pen groove strip at the rear */}
       <RoundedBox args={[w, 0.025, topD]} radius={0.008} smoothness={3} position={[0, h - 0.0125, zFront + topD / 2]} castShadow receiveShadow>
-        <meshStandardMaterial color={blue} roughness={0.38} metalness={0.05} />
+        <meshPhysicalMaterial color={blue} roughness={0.42} roughnessMap={speckle([4, 2])} clearcoat={0.55} clearcoatRoughness={0.28} />
       </RoundedBox>
       <mesh position={[0, h - 0.035, zFront + topD / 2]} castShadow>
         <boxGeometry args={[w - 0.01, 0.02, topD - 0.01]} />
@@ -119,13 +120,13 @@ export default function Scholar90({ w, d = 0.93, h = 0.76, f }: { w: number; d?:
 
       {/* Seat */}
       <RoundedBox args={[w, 0.03, 0.3]} radius={0.01} smoothness={3} position={[0, seatH, zSeat]} castShadow receiveShadow>
-        <meshStandardMaterial color={blue} roughness={0.38} />
+        <meshPhysicalMaterial color={blue} roughness={0.42} roughnessMap={speckle([4, 2])} clearcoat={0.55} clearcoatRoughness={0.28} />
       </RoundedBox>
 
       {/* Backrest, slightly reclined */}
       <group position={[0, backTop - 0.08, zBack]} rotation={[-0.09, 0, 0]}>
         <RoundedBox args={[w, 0.16, 0.022]} radius={0.008} smoothness={3} castShadow receiveShadow>
-          <meshStandardMaterial color={blue} roughness={0.38} />
+          <meshPhysicalMaterial color={blue} roughness={0.42} roughnessMap={speckle([4, 2])} clearcoat={0.55} clearcoatRoughness={0.28} />
         </RoundedBox>
       </group>
 

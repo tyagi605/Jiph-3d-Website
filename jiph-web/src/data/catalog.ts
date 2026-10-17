@@ -49,6 +49,8 @@ export type Product = {
   colours?: { name: string; code: string; hex: string }[];
   /** Product-specific top/panel shades listed before the standard laminates (first one is the default). */
   topColours?: { code: string; name: string; hex: string }[];
+  /** Real 3D models by size code, e.g. { "1103": "/models/scholar-90-1103.glb" } — see docs/3D-MODELS.md. */
+  models?: Record<string, string>;
   /** Default powder-coat shade name, e.g. "Silver Grey". */
   defaultFrame?: string;
   govtProject?: string;

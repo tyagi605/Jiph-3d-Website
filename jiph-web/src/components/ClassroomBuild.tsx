@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion, useWebGL } from "@/lib/use-webgl";
-import SequencePlayer, { loadManifest, type SequenceManifest } from "./SequencePlayer";
+import SequencePlayer, { type SequenceManifest } from "./SequencePlayer";
 import { DESKS, TL } from "./three/timeline";
 
 const ClassroomScene = dynamic(() => import("./three/ClassroomScene"), { ssr: false });
@@ -20,7 +20,7 @@ const STEPS = [
   { until: 1.01, eyebrow: "Ready", title: "Ready for the first bell.", body: "Now multiply it by every room on your campus. We make it in our own 1.5 lakh sq ft facility and install it across India.", cta: true },
 ];
 
-export default function ClassroomBuild() {
+export default function ClassroomBuild({ sequence }: { sequence: SequenceManifest | null }) {
   const section = useRef<HTMLElement>(null);
   const progress = useRef(0);
   const [step, setStep] = useState(0);
@@ -39,12 +39,8 @@ export default function ClassroomBuild() {
     const mode = params.get("sequence"); // "test" | "off" | null
     if (mode === "test") { setSource({ kind: "sequence", manifest: TEST_MANIFEST, test: true }); return; }
     if (mode === "off") { setSource({ kind: "live" }); return; }
-    let cancelled = false;
-    loadManifest(`${SEQUENCE_BASE}manifest.json`).then((m) => {
-      if (!cancelled) setSource(m ? { kind: "sequence", manifest: m, test: false } : { kind: "live" });
-    });
-    return () => { cancelled = true; };
-  }, []);
+    setSource(sequence ? { kind: "sequence", manifest: sequence, test: false } : { kind: "live" });
+  }, [sequence]);
 
   useEffect(() => {
     if (reduce) {

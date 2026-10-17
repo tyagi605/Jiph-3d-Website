@@ -51,7 +51,7 @@ export default function ProductConfigurator({ product }: { product: Product }) {
           {webgl === false ? (
             <div className="viewer-placeholder">3D preview needs WebGL. Sizes and finishes are listed alongside.</div>
           ) : webgl ? (
-            <ProductViewer kind={product.kind} dims={size.dims} seats={size.seats} finish={{ wood: lam.hex, metal: coat.hex }} colour={colour?.hex} slug={product.slug} view={view} showDims={showDims} />
+            <ProductViewer kind={product.kind} dims={size.dims} seats={size.seats} finish={{ wood: lam.hex, metal: coat.hex }} colour={colour?.hex} slug={product.slug} view={view} showDims={showDims} model={product.models?.[size.code]} />
           ) : (
             <div className="viewer-placeholder" />
           )}

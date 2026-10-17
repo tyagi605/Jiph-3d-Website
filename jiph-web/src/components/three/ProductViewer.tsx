@@ -2,11 +2,12 @@
 
 import { ContactShadows, Environment, Html, Lightformer, Line, OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useMemo, useRef } from "react";
+import { Component, Suspense, useEffect, useMemo, useRef, type ReactNode } from "react";
 import * as THREE from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import type { Kind } from "@/data/catalog";
 import { FurnitureModel, type Finish } from "./Furniture";
+import GlbModel from "./GlbModel";
 import { VIEW_DIR, type View } from "./views";
 
 type Props = {
@@ -18,7 +19,16 @@ type Props = {
   slug?: string;
   view?: View;
   showDims?: boolean;
+  /** GLB for the selected size; falls back to the procedural model if missing or still loading */
+  model?: string;
 };
+
+/** If a GLB fails to load, show the procedural model instead of an empty viewer. */
+class ModelBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() { return this.state.failed ? this.props.fallback : this.props.children; }
+}
 
 /** Glides the camera to the chosen preset; the visitor can still orbit freely afterwards. */
 function CameraRig({ view, dist, targetY, controls }: { view: View; dist: number; targetY: number; controls: React.RefObject<OrbitControlsImpl | null> }) {
@@ -71,7 +81,7 @@ function Dimensions({ dims }: { dims: [number, number, number] }) {
   );
 }
 
-export default function ProductViewer({ kind, dims, seats, finish, colour, slug, view = "three-quarter", showDims = false }: Props) {
+export default function ProductViewer({ kind, dims, seats, finish, colour, slug, view = "three-quarter", showDims = false, model }: Props) {
   const span = Math.max(dims[0], dims[1], dims[2]) / 1000;
   const dist = Math.max(2.2, span * 2.45);
   const targetY = (dims[2] / 1000) * 0.45;
@@ -95,7 +105,17 @@ export default function ProductViewer({ kind, dims, seats, finish, colour, slug,
       </Environment>
       <directionalLight position={[-2.5, 5, -3]} intensity={1.3} castShadow shadow-mapSize={[2048, 2048]} shadow-camera-left={-3} shadow-camera-right={3} shadow-camera-top={3} shadow-camera-bottom={-3} shadow-bias={-0.0003} shadow-normalBias={0.02} />
 
-      <FurnitureModel kind={kind} dims={dims} seats={seats} finish={finish} colour={colour} slug={slug} />
+      {(() => {
+        const procedural = <FurnitureModel kind={kind} dims={dims} seats={seats} finish={finish} colour={colour} slug={slug} />;
+        if (!model) return procedural;
+        return (
+          <ModelBoundary key={model} fallback={procedural}>
+            <Suspense fallback={procedural}>
+              <GlbModel url={model} widthMm={dims[0]} finish={finish} />
+            </Suspense>
+          </ModelBoundary>
+        );
+      })()}
       {showDims && <Dimensions dims={dims} />}
 
       <ContactShadows position={[0, 0.001, 0]} opacity={0.55} scale={span * 3} blur={2.2} far={1.5} resolution={1024} />
