@@ -4,13 +4,17 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion, useWebGL } from "@/lib/use-webgl";
+import SequencePlayer, { loadManifest, type SequenceManifest } from "./SequencePlayer";
 import { DESKS, TL } from "./three/timeline";
 
 const ClassroomScene = dynamic(() => import("./three/ClassroomScene"), { ssr: false });
 
+const SEQUENCE_BASE = "/sequences/classroom/";
+const TEST_MANIFEST: SequenceManifest = { frames: 150, desktop: { pattern: "", width: 1920, height: 1080 }, mobile: { pattern: "", width: 1080, height: 1350 } };
+
 const STEPS = [
   { until: 0.14, eyebrow: "Build a classroom", title: "Start with an empty room.", body: "9 m × 8 m, a typical secondary-school classroom. Scroll to furnish it with JIPH products." },
-  { until: 0.27, eyebrow: "The space", title: "Walls, windows, a greenboard.", body: "Every JIPH project starts with a site visit and a layout drawn to your room." },
+  { until: 0.27, eyebrow: "The space", title: "Walls, windows, a smart panel.", body: "Every JIPH project starts with a site visit and a layout drawn to your room." },
   { until: 0.66, eyebrow: "Scholar 90 · 1103", title: "Twelve desks. Twenty-four seats.", body: "Our most trusted classroom desk: steel frame, wooden seat and backrest, book shelf under the top.", sku: "2 Seater · 1066 × 930 × 750 mm" },
   { until: 0.8, eyebrow: "Mentor-1 · 1301", title: "A table for the teacher.", body: "Spacious top at an ergonomic 750 mm height, sized for books and a laptop.", sku: "1200 × 600 × 750 mm" },
   { until: 1.01, eyebrow: "Ready", title: "Ready for the first bell.", body: "Now multiply it by every room on your campus. We make it in our own 1.5 lakh sq ft facility and install it across India.", cta: true },
@@ -24,10 +28,22 @@ export default function ClassroomBuild() {
   const webgl = useWebGL();
   const reduce = useReducedMotion();
   const [lowPower, setLowPower] = useState(false);
+  /** Rendered frames win when present; the live WebGL scene is the fallback. */
+  const [source, setSource] = useState<{ kind: "checking" } | { kind: "live" } | { kind: "sequence"; manifest: SequenceManifest; test: boolean }>({ kind: "checking" });
 
   useEffect(() => {
-    const q = new URLSearchParams(window.location.search).get("quality");
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("quality");
     setLowPower(q === "lite" || (q !== "high" && (window.innerWidth < 760 || (navigator.hardwareConcurrency ?? 8) <= 4)));
+
+    const mode = params.get("sequence"); // "test" | "off" | null
+    if (mode === "test") { setSource({ kind: "sequence", manifest: TEST_MANIFEST, test: true }); return; }
+    if (mode === "off") { setSource({ kind: "live" }); return; }
+    let cancelled = false;
+    loadManifest(`${SEQUENCE_BASE}manifest.json`).then((m) => {
+      if (!cancelled) setSource(m ? { kind: "sequence", manifest: m, test: false } : { kind: "live" });
+    });
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -62,7 +78,13 @@ export default function ClassroomBuild() {
     <section ref={section} className={`build ${reduce ? "still" : ""}`} aria-label="Build a classroom with JIPH furniture">
       <div className="build-stage">
         <div className="build-canvas" aria-hidden="true">
-          {webgl ? <ClassroomScene progress={progress} lowPower={lowPower} /> : <div className="build-fallback" />}
+          {source.kind === "sequence" ? (
+            <SequencePlayer progress={progress} manifest={source.manifest} base={SEQUENCE_BASE} test={source.test} />
+          ) : source.kind === "live" && webgl ? (
+            <ClassroomScene progress={progress} lowPower={lowPower} />
+          ) : (
+            <div className="build-fallback" />
+          )}
         </div>
 
         <div className="build-copy" key={step}>

@@ -12,12 +12,24 @@ npm run build && npm run start   # production
 
 Copy `.env.example` to `.env.local` and fill the Zoho values to send leads to Zoho CRM. Without them, leads are only stored locally in `.data/leads.jsonl`.
 
+## Photoreal classroom (rendered frames)
+
+The home-page classroom plays a rendered image sequence when `public/sequences/classroom/manifest.json` exists, and falls back to the live WebGL scene otherwise. Render spec and timing for the 3D artist: [docs/RENDER-BRIEF.md](docs/RENDER-BRIEF.md). Convert renders with:
+
+```bash
+npm run sequence -- "D:/renders/classroom"
+```
+
+Test switches: `/?sequence=test` (generated frames), `/?sequence=off` (live scene), `/?quality=lite|high`.
+
 ## Structure
 
 | Path | What it is |
 |---|---|
 | `src/data/catalog.ts` | Products, ranges, finishes, projects, transcribed from the catalogue. Stand-in for the CMS. Ambiguous values are listed at the top of the file. |
 | `src/lib/catalog.ts` | The only data access layer pages use. Swap its internals for Payload/PostgreSQL later. |
+| `src/components/SequencePlayer.tsx` | Scroll-scrubbed frame player: priority loading, nearest-frame fallback, desktop and phone sets. |
+| `scripts/prepare-sequence.mjs` | Converts a folder of renders into WebP sets and a manifest. |
 | `src/components/ClassroomBuild.tsx` | Scroll-pinned home section: HTML overlay, seat counter, reduced-motion fallback. |
 | `src/components/three/ClassroomScene.tsx` | The 3D room that assembles on scroll (floor → walls → board → 12 desks → teacher table → camera pull-back). |
 | `src/components/three/Furniture.tsx` | Procedural models for each product kind, sized from catalogue dimensions. Replace with glTF from factory CAD. |
